@@ -40,7 +40,7 @@ The SCIN dataset contains dermatological cases with comprehensive clinical infor
 - Weighted skin condition labels (dermatologist consensus)
 - Skin condition confidence scores
 - Image gradability assessments
- 
+
 ## Project Workflow
 
 ### 1. Exploratory Data Analysis (EDA)
