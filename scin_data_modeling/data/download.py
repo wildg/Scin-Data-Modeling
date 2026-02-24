@@ -5,6 +5,7 @@ from google.cloud import storage
 BUCKET_NAME = "dx-scin-public-data"
 LOCAL_DATA_DIR = Path("data/raw")
 
+
 def download_bucket(prefix: str = "", local_dir: Path = LOCAL_DATA_DIR):
     """Download all files from the SCIN public GCS bucket."""
     client = storage.Client.create_anonymous_client()  # public bucket, no auth needed
@@ -20,6 +21,7 @@ def download_bucket(prefix: str = "", local_dir: Path = LOCAL_DATA_DIR):
             blob.download_to_filename(local_path)
         else:
             print(f"Skipping {blob.name} (already exists)")
+
 
 if __name__ == "__main__":
     download_bucket()
