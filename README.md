@@ -69,11 +69,15 @@ The SCIN dataset contains dermatological cases with comprehensive clinical infor
 - Mean-pool embeddings across 1–3 images per case
 - Save as `.npz` files: `embeddings_train.npz` (2448 × 2048), `embeddings_test.npz` (613 × 2048)
 
-### 4) Train — Logistic Regression Baseline
-- Load cached ResNet50 embeddings (`embeddings_train.npz`)
+### 4) Train
+Two models are available, both using the same multi-label approach:
 - Binarize the multi-label targets: fit a `MultiLabelBinarizer` on training labels across all 370 unique skin conditions, producing a binary matrix of shape (2448 × 370)
-- Train a `OneVsRestClassifier` wrapping `LogisticRegression (lbfgs solver)` — one binary classifier per condition, run in parallel via `n_jobs=-1`
-- Save the classifier and binarizer together as `models/baseline_logreg.joblib`
+- Train a `OneVsRestClassifier` (one binary classifier per condition, parallelized via `n_jobs=-1`)
+- Save the classifier and binarizer together as a single `.joblib` artifact
+
+**Logistic Regression** (`--model logreg`): `LogisticRegression(solver="lbfgs")` — fast linear baseline. Saved to `models/baseline_logreg.joblib`.
+
+**XGBoost** (`--model xgboost`): `XGBClassifier(n_estimators=300, max_depth=4, learning_rate=0.1, tree_method="hist")` — gradient-boosted trees that can learn non-linear interactions in the embedding space. Saved to `models/xgboost_model.joblib`.
 
 ### 5) Evaluate
 - Load test embeddings and the saved model artifact
@@ -98,7 +102,8 @@ Scin-Data-Modeling/
 │       ├── embeddings_train.npz
 │       └── embeddings_test.npz
 ├── models/
-│   └── baseline_logreg.joblib   # saved after training
+│   ├── baseline_logreg.joblib   # saved after training logreg
+│   └── xgboost_model.joblib     # saved after training xgboost
 └── scin_data_modeling/
     ├── cli.py
     ├── data/
@@ -108,7 +113,8 @@ Scin-Data-Modeling/
     │   └── streaming.py
     ├── models/
     │   ├── backbone.py          # ResNet50 / EfficientNet-B0
-    │   └── baseline.py          # logistic regression baseline
+    │   ├── baseline.py          # logistic regression baseline
+    │   └── xgboost_model.py     # XGBoost model
     └── evaluation/
         └── metrics.py           # multi-label evaluation metrics
 ```
@@ -119,7 +125,7 @@ Scin-Data-Modeling/
 - `pandas`, `numpy`
 - `google-cloud-storage`, `tqdm`
 - `typer`, `rich`
-- `scikit-learn`
+- `scikit-learn`, `xgboost`
 - `torch`, `torchvision`
 
 ### Installation
@@ -148,11 +154,18 @@ uv run scin_data_modeling train --mode frozen
 uv run scin_data_modeling evaluate
 ```
 
-### Run just the model (if data and embeddings already exist)
+### Run a specific model (if data and embeddings already exist)
+
+Both models use the same `--mode frozen` flag (train on cached embeddings) and the same `--model` flag to select which model to train or evaluate.
 
 ```bash
-uv run scin_data_modeling train --mode frozen
-uv run scin_data_modeling evaluate
+# Logistic regression (default)
+uv run scin_data_modeling train --mode frozen --model logreg
+uv run scin_data_modeling evaluate --model logreg
+
+# XGBoost
+uv run scin_data_modeling train --mode frozen --model xgboost
+uv run scin_data_modeling evaluate --model xgboost
 ```
 
 ### Options
@@ -162,8 +175,8 @@ uv run scin_data_modeling evaluate
 uv run scin_data_modeling embed --device mps
 
 # Custom data/model directories
-uv run scin_data_modeling train --mode frozen --processed-dir data/processed --model-dir models
-uv run scin_data_modeling evaluate --processed-dir data/processed --model-dir models
+uv run scin_data_modeling train --mode frozen --model xgboost --processed-dir data/processed --model-dir models
+uv run scin_data_modeling evaluate --model xgboost --processed-dir data/processed --model-dir models
 ```
 
 ### Output artifacts
@@ -175,7 +188,8 @@ uv run scin_data_modeling evaluate --processed-dir data/processed --model-dir mo
 | `data/processed/test.csv` | 613 test cases |
 | `data/processed/embeddings_train.npz` | ResNet50 features (2448 × 2048) |
 | `data/processed/embeddings_test.npz` | ResNet50 features (613 × 2048) |
-| `models/baseline_logreg.joblib` | Trained classifier + label binarizer |
+| `models/baseline_logreg.joblib` | Logistic regression classifier + label binarizer |
+| `models/xgboost_model.joblib` | XGBoost classifier + label binarizer |
 
 ## Baseline Model Results
 
@@ -203,6 +217,33 @@ The logistic regression baseline was evaluated on the 613-case held-out test set
 **Precision > Recall (0.30 vs 0.14)**: The model is conservative — when it does predict a label it is more often right than wrong, but it misses many true labels. This is typical for logistic regression with class imbalance: the classifier learns a high threshold before committing to a positive prediction.
 
 These results represent an expected baseline for a linear model on a difficult 370-class multi-label problem. They establish a performance floor for comparing against more powerful models (neural classification heads, fine-tuned backbones).
+
+## XGBoost Model Results
+
+The XGBoost model was evaluated on the same 613-case held-out test set using `OneVsRestClassifier(XGBClassifier(n_estimators=300, max_depth=4, learning_rate=0.1, tree_method="hist"))`.
+
+| Metric | Logistic Regression | XGBoost | Change |
+|--------|--------------------:|--------:|-------:|
+| **Hamming Loss** | 0.0083 | 0.0070 | -15% |
+| **F1 (micro)** | 0.1857 | 0.0959 | -48% |
+| **F1 (macro)** | 0.0163 | 0.0051 | -69% |
+| **F1 (weighted)** | 0.1583 | 0.0777 | -51% |
+| **Precision (micro)** | 0.2973 | 0.5180 | +74% |
+| **Recall (micro)** | 0.1350 | 0.0528 | -61% |
+| **Precision (macro)** | 0.0290 | 0.0237 | -18% |
+| **Recall (macro)** | 0.0128 | 0.0036 | -72% |
+
+### Interpreting the XGBoost results
+
+**XGBoost trades recall for precision drastically.** Micro precision jumps from 0.30 to 0.52 — when XGBoost predicts a label it is correct over half the time, a meaningful improvement over logistic regression. However, micro recall falls from 0.14 to 0.05, meaning the model only finds about 1 in 20 true labels. This is an extreme conservative shift: XGBoost raises its internal prediction threshold very high before committing to a positive label.
+
+**F1 (micro) drops from 0.19 to 0.10.** F1 is the harmonic mean of precision and recall, so the large recall drop outweighs the precision gain. Overall, XGBoost is less useful than logistic regression on this dataset despite being a more powerful model.
+
+**Why does this happen?** XGBoost with default `OneVsRestClassifier` wrapping trains each binary classifier independently on highly imbalanced data (most conditions appear in fewer than 5% of cases). XGBoost's decision trees tend to converge on high-confidence predictions only, suppressing positive predictions for rare classes even more aggressively than logistic regression. The result is high precision but very low recall.
+
+**Hamming Loss improves slightly (0.0083 → 0.0070)** because XGBoost predicts fewer positive labels overall — making fewer false positives at the cost of far more false negatives. As noted for the logistic regression, this metric is misleading for sparse multi-label problems.
+
+**Takeaway:** On this dataset, logistic regression outperforms XGBoost overall (higher F1). XGBoost would benefit from class-weight tuning (`scale_pos_weight`) or threshold calibration to rebalance precision and recall. These remain directions for future work.
 
 ## Notes on Labels
 
