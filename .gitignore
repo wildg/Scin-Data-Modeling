@@ -60,5 +60,4 @@ site/
 # /models/*
 
 # Data
-# /data/processed/*
-# /data/raw/*
+/data/raw/dataset/images
