@@ -36,8 +36,8 @@ class GCSStreamingDataset(Dataset):
     def __len__(self) -> int:
         return len(self.df)
 
-    def __getitem__(self, idx: int) -> tuple[list[torch.Tensor], list[str]]:
-        row = self.df.iloc[idx]
+    def __getitem__(self, index) -> tuple[list[torch.Tensor], list[str]]:
+        row = self.df.iloc[index]
         label: list[str] = row["label"]
         image_paths: list[str] = row["image_paths"]
 

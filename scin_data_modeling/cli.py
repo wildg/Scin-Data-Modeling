@@ -59,8 +59,7 @@ def _preprocess(
     cleaned_df = build_clean_df(combined_df)
     dropped = len(combined_df) - len(cleaned_df)
     console.print(
-        f"  Retained [cyan]{len(cleaned_df):,}[/cyan] cleaned cases "
-        f"(dropped {dropped:,} with missing labels/images)."
+        f"  Retained [cyan]{len(cleaned_df):,}[/cyan] cleaned cases (dropped {dropped:,} with missing labels/images)."
     )
 
     import json as _json
@@ -138,8 +137,7 @@ def _train(mode: str, processed_dir: Path, model_dir: Path, backbone_name: str, 
         train_emb = processed_dir / "embeddings_train.npz"
         if not train_emb.exists():
             console.print(
-                f"[red]Embeddings not found at {train_emb}.[/red]\n"
-                "  Run [bold]scin_data_modeling embed[/bold] first."
+                f"[red]Embeddings not found at {train_emb}.[/red]\n  Run [bold]scin_data_modeling embed[/bold] first."
             )
             raise typer.Exit(code=1)
         console.print(f"  Mode: [cyan]frozen[/cyan] — training head on cached embeddings")
