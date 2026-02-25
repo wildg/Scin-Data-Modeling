@@ -1,0 +1,2 @@
+case_id,image_path,pseudo_label,pseudo_confidence,pseudo_margin,accepted,pseudo_source_method
+-8788047348988358356,dataset/images/8292833249013705838.png,OTHER,0.8454652014652015,0.8134764062170078,1,SelfTraining_RF

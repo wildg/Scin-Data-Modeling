@@ -1,0 +1,19 @@
+{
+  "best_method": "SelfTraining_RF",
+  "n_labeled_train_rows": 2504,
+  "n_unlabeled_train_rows": 3889,
+  "n_unlabeled_train_cases": 1972,
+  "n_test_labeled_rows_total": 614,
+  "n_test_labeled_rows_seen_classes": 614,
+  "n_test_labeled_rows_unseen_classes": 0,
+  "top_k_classes": 20,
+  "min_label_confidence": 0.55,
+  "n_grouped_classes": 21,
+  "n_pseudo_accepted_rows": 136,
+  "n_pseudo_accepted_cases": 53,
+  "pseudo_accept_rate": 0.03497042941630239,
+  "pseudo_accept_rate_cases": 0.0268762677484787,
+  "pseudo_threshold": 0.6,
+  "pseudo_margin": 0.1,
+  "self_training_threshold": 0.6
+}

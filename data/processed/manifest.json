@@ -1,0 +1,2160 @@
+{
+  "cases_path": "data\\raw\\dataset\\scin_cases.csv",
+  "labels_path": "data\\raw\\dataset\\scin_labels.csv",
+  "target_column": "weighted_skin_condition_label",
+  "target_prob_columns": [
+    "target_prob__akv_acrokeratosis_verruciformis",
+    "target_prob__abrasion_and_or_friction_burn_of_thigh_without_infection",
+    "target_prob__abrasion_of_wrist",
+    "target_prob__abrasion_scrape_or_scab",
+    "target_prob__abscess",
+    "target_prob__acanthosis_nigricans",
+    "target_prob__acne",
+    "target_prob__acne_urticata",
+    "target_prob__acneiform_eruption",
+    "target_prob__acquired_digital_fibrokeratoma",
+    "target_prob__acquired_poikiloderma",
+    "target_prob__acral_erythema",
+    "target_prob__actinic_keratosis",
+    "target_prob__actinic_granuloma",
+    "target_prob__acute_and_chronic_dermatitis",
+    "target_prob__acute_constitutional_eczema",
+    "target_prob__acute_dermatitis_nos",
+    "target_prob__acute_generalised_exanthematous_pustulosis",
+    "target_prob__acute_vesicular_dermatitis",
+    "target_prob__acute_on_chronic_dyshidrotic_eczema_of_hands",
+    "target_prob__adnexal_neoplasm",
+    "target_prob__agminate_folliculitis",
+    "target_prob__allergic_contact_dermatitis",
+    "target_prob__allergic_contact_dermatitis_caused_by_allergenic_hapten_derived_from_plant",
+    "target_prob__amyloidosis_of_skin",
+    "target_prob__anetoderma",
+    "target_prob__angiokeratoma_of_skin",
+    "target_prob__angiosarcoma_of_skin",
+    "target_prob__animal_bite_wound",
+    "target_prob__annular_erythema",
+    "target_prob__atrophic_glossitis",
+    "target_prob__atypical_nevus",
+    "target_prob__autoimmune_diseases_affecting_skin",
+    "target_prob__b_cell_cutaneous_lymphoma",
+    "target_prob__bacterial_pyoderma",
+    "target_prob__basal_cell_carcinoma",
+    "target_prob__benign_cutaneous_vascular_tumor",
+    "target_prob__benign_tumor_of_dermis",
+    "target_prob__berloque_dermatitis",
+    "target_prob__blister",
+    "target_prob__blood_blister",
+    "target_prob__bullous_pemphigoid",
+    "target_prob__bullous_dermatitis",
+    "target_prob__bullous_dermatitis_nos",
+    "target_prob__bullous_dermatosis",
+    "target_prob__burn_erythema_of_abdominal_wall",
+    "target_prob__burn_erythema_of_back_of_hand",
+    "target_prob__burn_erythema_of_lower_leg",
+    "target_prob__burn_erythema_of_neck",
+    "target_prob__burn_of_skin",
+    "target_prob__cd_contact_dermatitis",
+    "target_prob__calcinosis_cutis",
+    "target_prob__calciphylaxis_cutis",
+    "target_prob__candida",
+    "target_prob__candida_infection_of_flexural_skin",
+    "target_prob__candida_intertrigo",
+    "target_prob__candidal_intertrigo",
+    "target_prob__cat_scratch_injury",
+    "target_prob__cellulitis",
+    "target_prob__cellulitis_of_hand_excluding_finger",
+    "target_prob__cheilitis",
+    "target_prob__chemical_leukoderma",
+    "target_prob__chicken_pox_exanthem",
+    "target_prob__chilblain",
+    "target_prob__chronic_dermatitis",
+    "target_prob__chronic_dermatitis_nos",
+    "target_prob__chronic_ulcer_of_skin",
+    "target_prob__clavus",
+    "target_prob__collagenoma",
+    "target_prob__condyloma_acuminatum",
+    "target_prob__confluent_and_reticulate_papillomatosis",
+    "target_prob__contact_burn_of_skin",
+    "target_prob__contact_dermatitis_caused_by_rhus_diversiloba",
+    "target_prob__contact_dermatitis_nos",
+    "target_prob__contact_purpura",
+    "target_prob__crohn_disease_of_skin",
+    "target_prob__crusted_eczematous_dermatitis",
+    "target_prob__cutaneous_t_cell_lymphoma",
+    "target_prob__cutaneous_larva_migrans",
+    "target_prob__cutaneous_leishmaniasis",
+    "target_prob__cutaneous_lupus",
+    "target_prob__cutaneous_lyme_disease",
+    "target_prob__cutaneous_metastasis",
+    "target_prob__cutaneous_polyarteritis_nodosa",
+    "target_prob__cutaneous_sarcoidosis",
+    "target_prob__cyst",
+    "target_prob__darier_s_disease",
+    "target_prob__deep_fungal_infection",
+    "target_prob__dehiscence",
+    "target_prob__dermatitis_herpetiformis",
+    "target_prob__dermatofibroma",
+    "target_prob__dermatofibrosarcoma_protuberans",
+    "target_prob__dermatomyositis",
+    "target_prob__dermatosis_due_to_flea",
+    "target_prob__diffuse_xanthoma",
+    "target_prob__discrete_papular_lichen_myxedematosus",
+    "target_prob__drug_rash",
+    "target_prob__drug_induced_abnormal_pigmentation_of_skin",
+    "target_prob__drug_induced_photosensitivity",
+    "target_prob__ecthyma",
+    "target_prob__ecthyma_gangrenosum",
+    "target_prob__eczema",
+    "target_prob__elephantiasis_nostras",
+    "target_prob__epidermal_nevus",
+    "target_prob__eruptive_xanthoma",
+    "target_prob__erysipelas",
+    "target_prob__erythema_ab_igne",
+    "target_prob__erythema_annulare_centrifugum",
+    "target_prob__erythema_dyschromicum_perstans",
+    "target_prob__erythema_elevatum_diutinum",
+    "target_prob__erythema_gyratum_repens",
+    "target_prob__erythema_marginatum",
+    "target_prob__erythema_marginatum_in_acute_rheumatic_fever",
+    "target_prob__erythema_migrans",
+    "target_prob__erythema_multiforme",
+    "target_prob__erythema_nodosum",
+    "target_prob__flagellate_erythema",
+    "target_prob__flushing",
+    "target_prob__folliculitis",
+    "target_prob__foot_ulcer",
+    "target_prob__foreign_body",
+    "target_prob__foreign_body_reaction_of_the_skin",
+    "target_prob__fox_fordyce_disease",
+    "target_prob__fungal_dermatitis",
+    "target_prob__fungal_dermatosis",
+    "target_prob__furuncle",
+    "target_prob__geographic_tongue",
+    "target_prob__granuloma_annulare",
+    "target_prob__granuloma_faciale",
+    "target_prob__granulomatous_disorder_of_the_skin_and_subcutaneous_tissue",
+    "target_prob__grover_s_disease",
+    "target_prob__hk_hyperkeratosis",
+    "target_prob__hailey_hailey_disease",
+    "target_prob__hand_foot_and_mouth_disease",
+    "target_prob__hemangioma",
+    "target_prob__hematoma_of_skin",
+    "target_prob__hemosiderin_pigmentation_of_lower_limb_due_to_varicose_veins_of_lower_limb",
+    "target_prob__hemosiderin_pigmentation_of_skin",
+    "target_prob__hemosiderin_pigmentation_of_skin_due_to_venous_insufficiency",
+    "target_prob__herpes_simplex",
+    "target_prob__herpes_zoster",
+    "target_prob__hidradenitis",
+    "target_prob__histiocytosis_of_skin",
+    "target_prob__hyperkeratosis_of_skin",
+    "target_prob__hyperpigmentation",
+    "target_prob__hyperpigmentation_disorder",
+    "target_prob__hypersensitivity",
+    "target_prob__ichthyosiform_dermatosis",
+    "target_prob__ichthyosis",
+    "target_prob__idiopathic_guttate_hypomelanosis",
+    "target_prob__impetigo",
+    "target_prob__infected_eczema",
+    "target_prob__infection_of_skin",
+    "target_prob__infection_of_tick_bite",
+    "target_prob__infection_of_toe_web",
+    "target_prob__infestation_caused_by_sarcoptes_scabiei_var_bovis",
+    "target_prob__inflammatory_dermatosis",
+    "target_prob__inflicted_skin_lesions",
+    "target_prob__ingrown_hair",
+    "target_prob__injection_site_disorder",
+    "target_prob__insect_bite",
+    "target_prob__intertrigo",
+    "target_prob__inverse_psoriasis",
+    "target_prob__irritant_contact_dermatitis",
+    "target_prob__jessner_lymphocytic_infiltrate",
+    "target_prob__kaposi_s_sarcoma_of_skin",
+    "target_prob__keratoderma",
+    "target_prob__keratosis",
+    "target_prob__keratosis_pilaris",
+    "target_prob__knuckle_pads",
+    "target_prob__koebner_phenomenon",
+    "target_prob__lentigo",
+    "target_prob__leprosy",
+    "target_prob__leukemia_cutis",
+    "target_prob__leukocytoclastic_vasculitis",
+    "target_prob__leukonychia",
+    "target_prob__lichen_simplex_chronicus",
+    "target_prob__lichen_nitidus",
+    "target_prob__lichen_planus_lichenoid_eruption",
+    "target_prob__lichen_sclerosus",
+    "target_prob__lichen_spinulosus",
+    "target_prob__lichen_striatus",
+    "target_prob__lichenified_eczema",
+    "target_prob__lichenified_eczematous_dermatitis",
+    "target_prob__lichenoid_myxedema",
+    "target_prob__linear_iga_disease",
+    "target_prob__livedo_reticularis",
+    "target_prob__livedoid_vasculopathy",
+    "target_prob__local_infection_of_wound",
+    "target_prob__localised_cutaneous_vasculitis",
+    "target_prob__localised_skin_eruption_due_to_drugs_and_medicaments",
+    "target_prob__localised_skin_infection",
+    "target_prob__localized_cutaneous_vasculitis",
+    "target_prob__localized_skin_infection",
+    "target_prob__lymphangioma",
+    "target_prob__lymphocutaneous_sporotrichosis",
+    "target_prob__lymphomatoid_papulosis",
+    "target_prob__majocchi_granuloma",
+    "target_prob__majocchi_s_granuloma",
+    "target_prob__melanin_pigmentation_due_to_exogenous_substance",
+    "target_prob__melanocytic_nevus",
+    "target_prob__melanoma",
+    "target_prob__melasma",
+    "target_prob__milia",
+    "target_prob__miliaria",
+    "target_prob__mixed_diabetic_ulcer_foot",
+    "target_prob__molluscum_contagiosum",
+    "target_prob__morphea_scleroderma",
+    "target_prob__muehrcke_lines",
+    "target_prob__mycetoma",
+    "target_prob__nail_dystrophy",
+    "target_prob__nail_dystrophy_due_to_trauma",
+    "target_prob__nail_pitting",
+    "target_prob__necrobiosis_lipoidica",
+    "target_prob__neoplasm_of_uncertain_behavior_of_skin_of_arm",
+    "target_prob__non_melanin_pigmentation_due_to_exogenous_substance_disorder",
+    "target_prob__non_specific_panniculitis",
+    "target_prob__o_e_ecchymoses_present",
+    "target_prob__o_e_petechiae_on_skin",
+    "target_prob__o_e_petechiae_present",
+    "target_prob__o_e_purulent_pustules",
+    "target_prob__o_e_pustules",
+    "target_prob__o_e_skin_fissure",
+    "target_prob__ochronosis",
+    "target_prob__on_examination_hemorrhagic_bullae",
+    "target_prob__onychodystrophy",
+    "target_prob__onychomycosis",
+    "target_prob__pxe_pseudoxanthoma_elasticum_like_syndrome",
+    "target_prob__pachyonychia_congenita",
+    "target_prob__paget_disease",
+    "target_prob__panniculitis",
+    "target_prob__panniculitis_nos",
+    "target_prob__papular_acrodermatitis_of_childhood",
+    "target_prob__parapsoriasis",
+    "target_prob__paronychia",
+    "target_prob__pemphigoid_gestationis",
+    "target_prob__pemphigus",
+    "target_prob__pemphigus_foliaceus",
+    "target_prob__pemphigus_vulgaris",
+    "target_prob__perforating_dermatosis",
+    "target_prob__perifollicular_haemorrhage",
+    "target_prob__perifolliculitis",
+    "target_prob__perioral_dermatitis",
+    "target_prob__perleche",
+    "target_prob__petechiae",
+    "target_prob__photocontact_dermatitis_berloque_dermatitis",
+    "target_prob__photodermatitis",
+    "target_prob__phytophotodermatitis",
+    "target_prob__pigmented_purpuric_eruption",
+    "target_prob__pincer_nail_deformity",
+    "target_prob__pityriasis_alba",
+    "target_prob__pityriasis_lichenoides",
+    "target_prob__pityriasis_rosea",
+    "target_prob__pityriasis_rubra_pilaris",
+    "target_prob__poisoning_by_nematocyst",
+    "target_prob__porokeratosis",
+    "target_prob__post_inflammatory_hyperpigmentation",
+    "target_prob__post_inflammatory_hypopigmentation",
+    "target_prob__pressure_ulcer",
+    "target_prob__pressure_ulcer_stage_2",
+    "target_prob__pretibial_myxedema",
+    "target_prob__primary_cutaneous_lymphoma",
+    "target_prob__prurigo",
+    "target_prob__prurigo_nodularis",
+    "target_prob__pruritic_urticarial_papules_and_plaques_of_pregnancy",
+    "target_prob__pseudolymphoma",
+    "target_prob__psoriasiform_dermatitis",
+    "target_prob__psoriasis",
+    "target_prob__purpura",
+    "target_prob__pyoderma",
+    "target_prob__pyoderma_gangrenosum",
+    "target_prob__pyogenic_granuloma",
+    "target_prob__rmsf_rocky_mountain_spotted_fever",
+    "target_prob__remove_from_labeling_tool",
+    "target_prob__rheumatoid_nodule",
+    "target_prob__rosacea",
+    "target_prob__rosai_dorfman_disease_i_know_rare_but_i_ve_seen_a_case_like_this_unilateral_rosacea_supported_bilateral_further_images",
+    "target_prob__scc_sccis",
+    "target_prob__sk_isk",
+    "target_prob__sle_systemic_lupus_erythematosus_related_syndrome",
+    "target_prob__scabies",
+    "target_prob__scar_condition",
+    "target_prob__seborrheic_dermatitis",
+    "target_prob__secondary_impetiginization",
+    "target_prob__skin_and_soft_tissue_atypical_mycobacterial_infection",
+    "target_prob__skin_atrophy",
+    "target_prob__skin_cancer",
+    "target_prob__skin_infection",
+    "target_prob__skin_lesion_in_drug_addict",
+    "target_prob__skin_striae",
+    "target_prob__skin_ulcer",
+    "target_prob__small_plaque_parapsoriasis",
+    "target_prob__snake_bite_wound",
+    "target_prob__sneddon_wilkinson_disease",
+    "target_prob__stasis_dermatitis",
+    "target_prob__sunburn",
+    "target_prob__superficial_wound_of_body_region",
+    "target_prob__sweet_syndrome",
+    "target_prob__syphilis",
+    "target_prob__tmep_telangiectasia_macularis_eruptiva_perstans",
+    "target_prob__tinea",
+    "target_prob__tinea_versicolor",
+    "target_prob__traumatic_blister",
+    "target_prob__traumatic_petechiae",
+    "target_prob__traumatic_ulcer",
+    "target_prob__tuberculosis_of_skin_and_subcutaneous_tissue",
+    "target_prob__tufted_angioma_of_skin",
+    "target_prob__urticaria",
+    "target_prob__urticarial_vasculitis",
+    "target_prob__varicose_veins_of_lower_extremity",
+    "target_prob__vasculitis_of_the_skin",
+    "target_prob__vasculitis_of_the_skin_nos",
+    "target_prob__venous_stasis_ulcer",
+    "target_prob__verruca_vulgaris",
+    "target_prob__viral_exanthem",
+    "target_prob__viral_dermatological_disorders",
+    "target_prob__viral_infection_of_skin",
+    "target_prob__vitiligo",
+    "target_prob__xanthoma",
+    "target_prob__xerosis",
+    "target_prob__deep_fungal_infection__2",
+    "target_prob__gouty_tophi",
+    "target_prob__granular_parakeratosis",
+    "target_prob__hyperlinear_palm",
+    "target_prob__panniculitis_of_skin",
+    "target_prob__pathergy",
+    "target_prob__post_sunburn_peeling_superficial_desquamation",
+    "target_prob__relapsing_polychondritis",
+    "target_prob__resolving_dermatitis",
+    "target_prob__scurvy",
+    "target_prob__superficial_hemorrhage",
+    "target_prob__varicose_vein",
+    "target_prob__wound_abrasion",
+    "target_prob__OTHER_UNSEEN"
+  ],
+  "class_vocabulary": [
+    "AKV - Acrokeratosis verruciformis",
+    "Abrasion and/or friction burn of thigh without infection",
+    "Abrasion of wrist",
+    "Abrasion, scrape, or scab",
+    "Abscess",
+    "Acanthosis nigricans",
+    "Acne",
+    "Acne urticata",
+    "Acneiform eruption",
+    "Acquired digital fibrokeratoma",
+    "Acquired poikiloderma",
+    "Acral erythema",
+    "Actinic Keratosis",
+    "Actinic granuloma",
+    "Acute and chronic dermatitis",
+    "Acute constitutional eczema",
+    "Acute dermatitis, NOS",
+    "Acute generalised exanthematous pustulosis",
+    "Acute vesicular dermatitis",
+    "Acute-on-chronic dyshidrotic eczema of hands",
+    "Adnexal neoplasm",
+    "Agminate folliculitis",
+    "Allergic Contact Dermatitis",
+    "Allergic contact dermatitis caused by allergenic hapten derived from plant",
+    "Amyloidosis of skin",
+    "Anetoderma",
+    "Angiokeratoma of skin",
+    "Angiosarcoma of skin",
+    "Animal bite - wound",
+    "Annular erythema",
+    "Atrophic glossitis",
+    "Atypical Nevus",
+    "Autoimmune diseases affecting skin",
+    "B-Cell Cutaneous Lymphoma",
+    "Bacterial pyoderma",
+    "Basal Cell Carcinoma",
+    "Benign cutaneous vascular tumor",
+    "Benign tumor of dermis",
+    "Berloque dermatitis",
+    "Blister",
+    "Blood blister",
+    "Bullous Pemphigoid",
+    "Bullous dermatitis",
+    "Bullous dermatitis, NOS",
+    "Bullous dermatosis",
+    "Burn erythema of abdominal wall",
+    "Burn erythema of back of hand",
+    "Burn erythema of lower leg",
+    "Burn erythema of neck",
+    "Burn of skin",
+    "CD - Contact dermatitis",
+    "Calcinosis cutis",
+    "Calciphylaxis cutis",
+    "Candida",
+    "Candida infection of flexural skin",
+    "Candida intertrigo",
+    "Candidal intertrigo",
+    "Cat scratch injury",
+    "Cellulitis",
+    "Cellulitis of hand excluding finger",
+    "Cheilitis",
+    "Chemical leukoderma",
+    "Chicken pox exanthem",
+    "Chilblain",
+    "Chronic dermatitis",
+    "Chronic dermatitis, NOS",
+    "Chronic ulcer of skin",
+    "Clavus",
+    "Collagenoma",
+    "Condyloma acuminatum",
+    "Confluent and reticulate papillomatosis",
+    "Contact burn of skin",
+    "Contact dermatitis caused by Rhus diversiloba",
+    "Contact dermatitis, NOS",
+    "Contact purpura",
+    "Crohn disease of skin",
+    "Crusted eczematous dermatitis",
+    "Cutaneous T Cell Lymphoma",
+    "Cutaneous larva migrans",
+    "Cutaneous leishmaniasis",
+    "Cutaneous lupus",
+    "Cutaneous lyme disease",
+    "Cutaneous metastasis",
+    "Cutaneous polyarteritis nodosa",
+    "Cutaneous sarcoidosis",
+    "Cyst",
+    "Darier's disease",
+    "Deep fungal infection",
+    "Dehiscence",
+    "Dermatitis herpetiformis",
+    "Dermatofibroma",
+    "Dermatofibrosarcoma protuberans",
+    "Dermatomyositis",
+    "Dermatosis due to flea",
+    "Diffuse xanthoma",
+    "Discrete papular lichen myxedematosus",
+    "Drug Rash",
+    "Drug induced abnormal pigmentation of skin",
+    "Drug-induced photosensitivity",
+    "Ecthyma",
+    "Ecthyma gangrenosum",
+    "Eczema",
+    "Elephantiasis nostras",
+    "Epidermal nevus",
+    "Eruptive xanthoma",
+    "Erysipelas",
+    "Erythema ab igne",
+    "Erythema annulare centrifugum",
+    "Erythema dyschromicum perstans",
+    "Erythema elevatum diutinum",
+    "Erythema gyratum repens",
+    "Erythema marginatum",
+    "Erythema marginatum in acute rheumatic fever",
+    "Erythema migrans",
+    "Erythema multiforme",
+    "Erythema nodosum",
+    "Flagellate erythema",
+    "Flushing",
+    "Folliculitis",
+    "Foot ulcer",
+    "Foreign body",
+    "Foreign body reaction of the skin",
+    "Fox-Fordyce disease",
+    "Fungal dermatitis",
+    "Fungal dermatosis",
+    "Furuncle",
+    "Geographic tongue",
+    "Granuloma annulare",
+    "Granuloma faciale",
+    "Granulomatous disorder of the skin and subcutaneous tissue",
+    "Grover's disease",
+    "HK - Hyperkeratosis",
+    "Hailey Hailey disease",
+    "Hand foot and mouth disease",
+    "Hemangioma",
+    "Hematoma of skin",
+    "Hemosiderin pigmentation of lower limb due to varicose veins of lower limb",
+    "Hemosiderin pigmentation of skin",
+    "Hemosiderin pigmentation of skin due to venous insufficiency",
+    "Herpes Simplex",
+    "Herpes Zoster",
+    "Hidradenitis",
+    "Histiocytosis of skin",
+    "Hyperkeratosis of skin",
+    "Hyperpigmentation",
+    "Hyperpigmentation disorder",
+    "Hypersensitivity",
+    "Ichthyosiform dermatosis",
+    "Ichthyosis",
+    "Idiopathic guttate hypomelanosis",
+    "Impetigo",
+    "Infected eczema",
+    "Infection of skin",
+    "Infection of tick bite",
+    "Infection of toe web",
+    "Infestation caused by Sarcoptes scabiei var bovis",
+    "Inflammatory dermatosis",
+    "Inflicted skin lesions",
+    "Ingrown hair",
+    "Injection site disorder",
+    "Insect Bite",
+    "Intertrigo",
+    "Inverse psoriasis",
+    "Irritant Contact Dermatitis",
+    "Jessner lymphocytic infiltrate",
+    "Kaposi's sarcoma of skin",
+    "Keratoderma",
+    "Keratosis",
+    "Keratosis pilaris",
+    "Knuckle pads",
+    "Koebner phenomenon",
+    "Lentigo",
+    "Leprosy",
+    "Leukemia cutis",
+    "Leukocytoclastic Vasculitis",
+    "Leukonychia",
+    "Lichen Simplex Chronicus",
+    "Lichen nitidus",
+    "Lichen planus/lichenoid eruption",
+    "Lichen sclerosus",
+    "Lichen spinulosus",
+    "Lichen striatus",
+    "Lichenified eczema",
+    "Lichenified eczematous dermatitis",
+    "Lichenoid myxedema",
+    "Linear IgA disease",
+    "Livedo reticularis",
+    "Livedoid vasculopathy",
+    "Local infection of wound",
+    "Localised cutaneous vasculitis",
+    "Localised skin eruption due to drugs and medicaments",
+    "Localised skin infection",
+    "Localized cutaneous vasculitis",
+    "Localized skin infection",
+    "Lymphangioma",
+    "Lymphocutaneous sporotrichosis",
+    "Lymphomatoid papulosis",
+    "Majocchi granuloma",
+    "Majocchi's granuloma",
+    "Melanin pigmentation due to exogenous substance",
+    "Melanocytic Nevus",
+    "Melanoma",
+    "Melasma",
+    "Milia",
+    "Miliaria",
+    "Mixed diabetic ulcer - foot",
+    "Molluscum Contagiosum",
+    "Morphea/Scleroderma",
+    "Muehrcke lines",
+    "Mycetoma",
+    "Nail dystrophy",
+    "Nail dystrophy due to trauma",
+    "Nail pitting",
+    "Necrobiosis lipoidica",
+    "Neoplasm of uncertain behavior of skin of arm",
+    "Non-melanin pigmentation due to exogenous substance (disorder)",
+    "Non-specific panniculitis",
+    "O/E - ecchymoses present",
+    "O/E - petechiae on skin",
+    "O/E - petechiae present",
+    "O/E - purulent pustules",
+    "O/E - pustules",
+    "O/E - skin fissure",
+    "Ochronosis",
+    "On examination - hemorrhagic bullae",
+    "Onychodystrophy",
+    "Onychomycosis",
+    "PXE (pseudoxanthoma elasticum) like syndrome",
+    "Pachyonychia congenita",
+    "Paget disease",
+    "Panniculitis",
+    "Panniculitis, NOS",
+    "Papular acrodermatitis of childhood",
+    "Parapsoriasis",
+    "Paronychia",
+    "Pemphigoid gestationis",
+    "Pemphigus",
+    "Pemphigus foliaceus",
+    "Pemphigus vulgaris",
+    "Perforating dermatosis",
+    "Perifollicular haemorrhage",
+    "Perifolliculitis",
+    "Perioral Dermatitis",
+    "Perleche",
+    "Petechiae",
+    "Photocontact dermatitis [berloque dermatitis]",
+    "Photodermatitis",
+    "Phytophotodermatitis",
+    "Pigmented purpuric eruption",
+    "Pincer nail deformity",
+    "Pityriasis alba",
+    "Pityriasis lichenoides",
+    "Pityriasis rosea",
+    "Pityriasis rubra pilaris",
+    "Poisoning by nematocyst",
+    "Porokeratosis",
+    "Post-Inflammatory hyperpigmentation",
+    "Post-Inflammatory hypopigmentation",
+    "Pressure ulcer",
+    "Pressure ulcer stage 2",
+    "Pretibial myxedema",
+    "Primary cutaneous lymphoma",
+    "Prurigo",
+    "Prurigo nodularis",
+    "Pruritic urticarial papules and plaques of pregnancy",
+    "Pseudolymphoma",
+    "Psoriasiform dermatitis",
+    "Psoriasis",
+    "Purpura",
+    "Pyoderma",
+    "Pyoderma Gangrenosum",
+    "Pyogenic granuloma",
+    "RMSF - Rocky Mountain spotted fever",
+    "Remove from labeling tool",
+    "Rheumatoid nodule",
+    "Rosacea",
+    "Rosai Dorfman disease - I know rare, but I've seen a case like this unilateral.  Rosacea supported bilateral further images",
+    "SCC/SCCIS",
+    "SK/ISK",
+    "SLE - Systemic lupus erythematosus-related syndrome",
+    "Scabies",
+    "Scar Condition",
+    "Seborrheic Dermatitis",
+    "Secondary impetiginization",
+    "Skin and soft tissue atypical mycobacterial infection",
+    "Skin atrophy",
+    "Skin cancer",
+    "Skin infection",
+    "Skin lesion in drug addict",
+    "Skin striae",
+    "Skin ulcer",
+    "Small plaque parapsoriasis",
+    "Snake bite - wound",
+    "Sneddon-Wilkinson disease",
+    "Stasis Dermatitis",
+    "Sunburn",
+    "Superficial wound of body region",
+    "Sweet syndrome",
+    "Syphilis",
+    "TMEP - telangiectasia macularis eruptiva perstans",
+    "Tinea",
+    "Tinea Versicolor",
+    "Traumatic blister",
+    "Traumatic petechiae",
+    "Traumatic ulcer",
+    "Tuberculosis of skin and subcutaneous tissue",
+    "Tufted angioma of skin",
+    "Urticaria",
+    "Urticarial vasculitis",
+    "Varicose veins of lower extremity",
+    "Vasculitis of the skin",
+    "Vasculitis of the skin, NOS",
+    "Venous Stasis Ulcer",
+    "Verruca vulgaris",
+    "Viral Exanthem",
+    "Viral dermatological disorders",
+    "Viral infection of skin",
+    "Vitiligo",
+    "Xanthoma",
+    "Xerosis",
+    "deep fungal infection",
+    "gouty tophi",
+    "granular parakeratosis",
+    "hyperlinear palm",
+    "panniculitis of skin",
+    "pathergy",
+    "post-sunburn peeling/superficial desquamation",
+    "relapsing polychondritis",
+    "resolving dermatitis",
+    "scurvy",
+    "superficial hemorrhage",
+    "varicose vein",
+    "wound/abrasion"
+  ],
+  "target_column_map_rows": [
+    {
+      "label": "AKV - Acrokeratosis verruciformis",
+      "column": "target_prob__akv_acrokeratosis_verruciformis"
+    },
+    {
+      "label": "Abrasion and/or friction burn of thigh without infection",
+      "column": "target_prob__abrasion_and_or_friction_burn_of_thigh_without_infection"
+    },
+    {
+      "label": "Abrasion of wrist",
+      "column": "target_prob__abrasion_of_wrist"
+    },
+    {
+      "label": "Abrasion, scrape, or scab",
+      "column": "target_prob__abrasion_scrape_or_scab"
+    },
+    {
+      "label": "Abscess",
+      "column": "target_prob__abscess"
+    },
+    {
+      "label": "Acanthosis nigricans",
+      "column": "target_prob__acanthosis_nigricans"
+    },
+    {
+      "label": "Acne",
+      "column": "target_prob__acne"
+    },
+    {
+      "label": "Acne urticata",
+      "column": "target_prob__acne_urticata"
+    },
+    {
+      "label": "Acneiform eruption",
+      "column": "target_prob__acneiform_eruption"
+    },
+    {
+      "label": "Acquired digital fibrokeratoma",
+      "column": "target_prob__acquired_digital_fibrokeratoma"
+    },
+    {
+      "label": "Acquired poikiloderma",
+      "column": "target_prob__acquired_poikiloderma"
+    },
+    {
+      "label": "Acral erythema",
+      "column": "target_prob__acral_erythema"
+    },
+    {
+      "label": "Actinic Keratosis",
+      "column": "target_prob__actinic_keratosis"
+    },
+    {
+      "label": "Actinic granuloma",
+      "column": "target_prob__actinic_granuloma"
+    },
+    {
+      "label": "Acute and chronic dermatitis",
+      "column": "target_prob__acute_and_chronic_dermatitis"
+    },
+    {
+      "label": "Acute constitutional eczema",
+      "column": "target_prob__acute_constitutional_eczema"
+    },
+    {
+      "label": "Acute dermatitis, NOS",
+      "column": "target_prob__acute_dermatitis_nos"
+    },
+    {
+      "label": "Acute generalised exanthematous pustulosis",
+      "column": "target_prob__acute_generalised_exanthematous_pustulosis"
+    },
+    {
+      "label": "Acute vesicular dermatitis",
+      "column": "target_prob__acute_vesicular_dermatitis"
+    },
+    {
+      "label": "Acute-on-chronic dyshidrotic eczema of hands",
+      "column": "target_prob__acute_on_chronic_dyshidrotic_eczema_of_hands"
+    },
+    {
+      "label": "Adnexal neoplasm",
+      "column": "target_prob__adnexal_neoplasm"
+    },
+    {
+      "label": "Agminate folliculitis",
+      "column": "target_prob__agminate_folliculitis"
+    },
+    {
+      "label": "Allergic Contact Dermatitis",
+      "column": "target_prob__allergic_contact_dermatitis"
+    },
+    {
+      "label": "Allergic contact dermatitis caused by allergenic hapten derived from plant",
+      "column": "target_prob__allergic_contact_dermatitis_caused_by_allergenic_hapten_derived_from_plant"
+    },
+    {
+      "label": "Amyloidosis of skin",
+      "column": "target_prob__amyloidosis_of_skin"
+    },
+    {
+      "label": "Anetoderma",
+      "column": "target_prob__anetoderma"
+    },
+    {
+      "label": "Angiokeratoma of skin",
+      "column": "target_prob__angiokeratoma_of_skin"
+    },
+    {
+      "label": "Angiosarcoma of skin",
+      "column": "target_prob__angiosarcoma_of_skin"
+    },
+    {
+      "label": "Animal bite - wound",
+      "column": "target_prob__animal_bite_wound"
+    },
+    {
+      "label": "Annular erythema",
+      "column": "target_prob__annular_erythema"
+    },
+    {
+      "label": "Atrophic glossitis",
+      "column": "target_prob__atrophic_glossitis"
+    },
+    {
+      "label": "Atypical Nevus",
+      "column": "target_prob__atypical_nevus"
+    },
+    {
+      "label": "Autoimmune diseases affecting skin",
+      "column": "target_prob__autoimmune_diseases_affecting_skin"
+    },
+    {
+      "label": "B-Cell Cutaneous Lymphoma",
+      "column": "target_prob__b_cell_cutaneous_lymphoma"
+    },
+    {
+      "label": "Bacterial pyoderma",
+      "column": "target_prob__bacterial_pyoderma"
+    },
+    {
+      "label": "Basal Cell Carcinoma",
+      "column": "target_prob__basal_cell_carcinoma"
+    },
+    {
+      "label": "Benign cutaneous vascular tumor",
+      "column": "target_prob__benign_cutaneous_vascular_tumor"
+    },
+    {
+      "label": "Benign tumor of dermis",
+      "column": "target_prob__benign_tumor_of_dermis"
+    },
+    {
+      "label": "Berloque dermatitis",
+      "column": "target_prob__berloque_dermatitis"
+    },
+    {
+      "label": "Blister",
+      "column": "target_prob__blister"
+    },
+    {
+      "label": "Blood blister",
+      "column": "target_prob__blood_blister"
+    },
+    {
+      "label": "Bullous Pemphigoid",
+      "column": "target_prob__bullous_pemphigoid"
+    },
+    {
+      "label": "Bullous dermatitis",
+      "column": "target_prob__bullous_dermatitis"
+    },
+    {
+      "label": "Bullous dermatitis, NOS",
+      "column": "target_prob__bullous_dermatitis_nos"
+    },
+    {
+      "label": "Bullous dermatosis",
+      "column": "target_prob__bullous_dermatosis"
+    },
+    {
+      "label": "Burn erythema of abdominal wall",
+      "column": "target_prob__burn_erythema_of_abdominal_wall"
+    },
+    {
+      "label": "Burn erythema of back of hand",
+      "column": "target_prob__burn_erythema_of_back_of_hand"
+    },
+    {
+      "label": "Burn erythema of lower leg",
+      "column": "target_prob__burn_erythema_of_lower_leg"
+    },
+    {
+      "label": "Burn erythema of neck",
+      "column": "target_prob__burn_erythema_of_neck"
+    },
+    {
+      "label": "Burn of skin",
+      "column": "target_prob__burn_of_skin"
+    },
+    {
+      "label": "CD - Contact dermatitis",
+      "column": "target_prob__cd_contact_dermatitis"
+    },
+    {
+      "label": "Calcinosis cutis",
+      "column": "target_prob__calcinosis_cutis"
+    },
+    {
+      "label": "Calciphylaxis cutis",
+      "column": "target_prob__calciphylaxis_cutis"
+    },
+    {
+      "label": "Candida",
+      "column": "target_prob__candida"
+    },
+    {
+      "label": "Candida infection of flexural skin",
+      "column": "target_prob__candida_infection_of_flexural_skin"
+    },
+    {
+      "label": "Candida intertrigo",
+      "column": "target_prob__candida_intertrigo"
+    },
+    {
+      "label": "Candidal intertrigo",
+      "column": "target_prob__candidal_intertrigo"
+    },
+    {
+      "label": "Cat scratch injury",
+      "column": "target_prob__cat_scratch_injury"
+    },
+    {
+      "label": "Cellulitis",
+      "column": "target_prob__cellulitis"
+    },
+    {
+      "label": "Cellulitis of hand excluding finger",
+      "column": "target_prob__cellulitis_of_hand_excluding_finger"
+    },
+    {
+      "label": "Cheilitis",
+      "column": "target_prob__cheilitis"
+    },
+    {
+      "label": "Chemical leukoderma",
+      "column": "target_prob__chemical_leukoderma"
+    },
+    {
+      "label": "Chicken pox exanthem",
+      "column": "target_prob__chicken_pox_exanthem"
+    },
+    {
+      "label": "Chilblain",
+      "column": "target_prob__chilblain"
+    },
+    {
+      "label": "Chronic dermatitis",
+      "column": "target_prob__chronic_dermatitis"
+    },
+    {
+      "label": "Chronic dermatitis, NOS",
+      "column": "target_prob__chronic_dermatitis_nos"
+    },
+    {
+      "label": "Chronic ulcer of skin",
+      "column": "target_prob__chronic_ulcer_of_skin"
+    },
+    {
+      "label": "Clavus",
+      "column": "target_prob__clavus"
+    },
+    {
+      "label": "Collagenoma",
+      "column": "target_prob__collagenoma"
+    },
+    {
+      "label": "Condyloma acuminatum",
+      "column": "target_prob__condyloma_acuminatum"
+    },
+    {
+      "label": "Confluent and reticulate papillomatosis",
+      "column": "target_prob__confluent_and_reticulate_papillomatosis"
+    },
+    {
+      "label": "Contact burn of skin",
+      "column": "target_prob__contact_burn_of_skin"
+    },
+    {
+      "label": "Contact dermatitis caused by Rhus diversiloba",
+      "column": "target_prob__contact_dermatitis_caused_by_rhus_diversiloba"
+    },
+    {
+      "label": "Contact dermatitis, NOS",
+      "column": "target_prob__contact_dermatitis_nos"
+    },
+    {
+      "label": "Contact purpura",
+      "column": "target_prob__contact_purpura"
+    },
+    {
+      "label": "Crohn disease of skin",
+      "column": "target_prob__crohn_disease_of_skin"
+    },
+    {
+      "label": "Crusted eczematous dermatitis",
+      "column": "target_prob__crusted_eczematous_dermatitis"
+    },
+    {
+      "label": "Cutaneous T Cell Lymphoma",
+      "column": "target_prob__cutaneous_t_cell_lymphoma"
+    },
+    {
+      "label": "Cutaneous larva migrans",
+      "column": "target_prob__cutaneous_larva_migrans"
+    },
+    {
+      "label": "Cutaneous leishmaniasis",
+      "column": "target_prob__cutaneous_leishmaniasis"
+    },
+    {
+      "label": "Cutaneous lupus",
+      "column": "target_prob__cutaneous_lupus"
+    },
+    {
+      "label": "Cutaneous lyme disease",
+      "column": "target_prob__cutaneous_lyme_disease"
+    },
+    {
+      "label": "Cutaneous metastasis",
+      "column": "target_prob__cutaneous_metastasis"
+    },
+    {
+      "label": "Cutaneous polyarteritis nodosa",
+      "column": "target_prob__cutaneous_polyarteritis_nodosa"
+    },
+    {
+      "label": "Cutaneous sarcoidosis",
+      "column": "target_prob__cutaneous_sarcoidosis"
+    },
+    {
+      "label": "Cyst",
+      "column": "target_prob__cyst"
+    },
+    {
+      "label": "Darier's disease",
+      "column": "target_prob__darier_s_disease"
+    },
+    {
+      "label": "Deep fungal infection",
+      "column": "target_prob__deep_fungal_infection"
+    },
+    {
+      "label": "Dehiscence",
+      "column": "target_prob__dehiscence"
+    },
+    {
+      "label": "Dermatitis herpetiformis",
+      "column": "target_prob__dermatitis_herpetiformis"
+    },
+    {
+      "label": "Dermatofibroma",
+      "column": "target_prob__dermatofibroma"
+    },
+    {
+      "label": "Dermatofibrosarcoma protuberans",
+      "column": "target_prob__dermatofibrosarcoma_protuberans"
+    },
+    {
+      "label": "Dermatomyositis",
+      "column": "target_prob__dermatomyositis"
+    },
+    {
+      "label": "Dermatosis due to flea",
+      "column": "target_prob__dermatosis_due_to_flea"
+    },
+    {
+      "label": "Diffuse xanthoma",
+      "column": "target_prob__diffuse_xanthoma"
+    },
+    {
+      "label": "Discrete papular lichen myxedematosus",
+      "column": "target_prob__discrete_papular_lichen_myxedematosus"
+    },
+    {
+      "label": "Drug Rash",
+      "column": "target_prob__drug_rash"
+    },
+    {
+      "label": "Drug induced abnormal pigmentation of skin",
+      "column": "target_prob__drug_induced_abnormal_pigmentation_of_skin"
+    },
+    {
+      "label": "Drug-induced photosensitivity",
+      "column": "target_prob__drug_induced_photosensitivity"
+    },
+    {
+      "label": "Ecthyma",
+      "column": "target_prob__ecthyma"
+    },
+    {
+      "label": "Ecthyma gangrenosum",
+      "column": "target_prob__ecthyma_gangrenosum"
+    },
+    {
+      "label": "Eczema",
+      "column": "target_prob__eczema"
+    },
+    {
+      "label": "Elephantiasis nostras",
+      "column": "target_prob__elephantiasis_nostras"
+    },
+    {
+      "label": "Epidermal nevus",
+      "column": "target_prob__epidermal_nevus"
+    },
+    {
+      "label": "Eruptive xanthoma",
+      "column": "target_prob__eruptive_xanthoma"
+    },
+    {
+      "label": "Erysipelas",
+      "column": "target_prob__erysipelas"
+    },
+    {
+      "label": "Erythema ab igne",
+      "column": "target_prob__erythema_ab_igne"
+    },
+    {
+      "label": "Erythema annulare centrifugum",
+      "column": "target_prob__erythema_annulare_centrifugum"
+    },
+    {
+      "label": "Erythema dyschromicum perstans",
+      "column": "target_prob__erythema_dyschromicum_perstans"
+    },
+    {
+      "label": "Erythema elevatum diutinum",
+      "column": "target_prob__erythema_elevatum_diutinum"
+    },
+    {
+      "label": "Erythema gyratum repens",
+      "column": "target_prob__erythema_gyratum_repens"
+    },
+    {
+      "label": "Erythema marginatum",
+      "column": "target_prob__erythema_marginatum"
+    },
+    {
+      "label": "Erythema marginatum in acute rheumatic fever",
+      "column": "target_prob__erythema_marginatum_in_acute_rheumatic_fever"
+    },
+    {
+      "label": "Erythema migrans",
+      "column": "target_prob__erythema_migrans"
+    },
+    {
+      "label": "Erythema multiforme",
+      "column": "target_prob__erythema_multiforme"
+    },
+    {
+      "label": "Erythema nodosum",
+      "column": "target_prob__erythema_nodosum"
+    },
+    {
+      "label": "Flagellate erythema",
+      "column": "target_prob__flagellate_erythema"
+    },
+    {
+      "label": "Flushing",
+      "column": "target_prob__flushing"
+    },
+    {
+      "label": "Folliculitis",
+      "column": "target_prob__folliculitis"
+    },
+    {
+      "label": "Foot ulcer",
+      "column": "target_prob__foot_ulcer"
+    },
+    {
+      "label": "Foreign body",
+      "column": "target_prob__foreign_body"
+    },
+    {
+      "label": "Foreign body reaction of the skin",
+      "column": "target_prob__foreign_body_reaction_of_the_skin"
+    },
+    {
+      "label": "Fox-Fordyce disease",
+      "column": "target_prob__fox_fordyce_disease"
+    },
+    {
+      "label": "Fungal dermatitis",
+      "column": "target_prob__fungal_dermatitis"
+    },
+    {
+      "label": "Fungal dermatosis",
+      "column": "target_prob__fungal_dermatosis"
+    },
+    {
+      "label": "Furuncle",
+      "column": "target_prob__furuncle"
+    },
+    {
+      "label": "Geographic tongue",
+      "column": "target_prob__geographic_tongue"
+    },
+    {
+      "label": "Granuloma annulare",
+      "column": "target_prob__granuloma_annulare"
+    },
+    {
+      "label": "Granuloma faciale",
+      "column": "target_prob__granuloma_faciale"
+    },
+    {
+      "label": "Granulomatous disorder of the skin and subcutaneous tissue",
+      "column": "target_prob__granulomatous_disorder_of_the_skin_and_subcutaneous_tissue"
+    },
+    {
+      "label": "Grover's disease",
+      "column": "target_prob__grover_s_disease"
+    },
+    {
+      "label": "HK - Hyperkeratosis",
+      "column": "target_prob__hk_hyperkeratosis"
+    },
+    {
+      "label": "Hailey Hailey disease",
+      "column": "target_prob__hailey_hailey_disease"
+    },
+    {
+      "label": "Hand foot and mouth disease",
+      "column": "target_prob__hand_foot_and_mouth_disease"
+    },
+    {
+      "label": "Hemangioma",
+      "column": "target_prob__hemangioma"
+    },
+    {
+      "label": "Hematoma of skin",
+      "column": "target_prob__hematoma_of_skin"
+    },
+    {
+      "label": "Hemosiderin pigmentation of lower limb due to varicose veins of lower limb",
+      "column": "target_prob__hemosiderin_pigmentation_of_lower_limb_due_to_varicose_veins_of_lower_limb"
+    },
+    {
+      "label": "Hemosiderin pigmentation of skin",
+      "column": "target_prob__hemosiderin_pigmentation_of_skin"
+    },
+    {
+      "label": "Hemosiderin pigmentation of skin due to venous insufficiency",
+      "column": "target_prob__hemosiderin_pigmentation_of_skin_due_to_venous_insufficiency"
+    },
+    {
+      "label": "Herpes Simplex",
+      "column": "target_prob__herpes_simplex"
+    },
+    {
+      "label": "Herpes Zoster",
+      "column": "target_prob__herpes_zoster"
+    },
+    {
+      "label": "Hidradenitis",
+      "column": "target_prob__hidradenitis"
+    },
+    {
+      "label": "Histiocytosis of skin",
+      "column": "target_prob__histiocytosis_of_skin"
+    },
+    {
+      "label": "Hyperkeratosis of skin",
+      "column": "target_prob__hyperkeratosis_of_skin"
+    },
+    {
+      "label": "Hyperpigmentation",
+      "column": "target_prob__hyperpigmentation"
+    },
+    {
+      "label": "Hyperpigmentation disorder",
+      "column": "target_prob__hyperpigmentation_disorder"
+    },
+    {
+      "label": "Hypersensitivity",
+      "column": "target_prob__hypersensitivity"
+    },
+    {
+      "label": "Ichthyosiform dermatosis",
+      "column": "target_prob__ichthyosiform_dermatosis"
+    },
+    {
+      "label": "Ichthyosis",
+      "column": "target_prob__ichthyosis"
+    },
+    {
+      "label": "Idiopathic guttate hypomelanosis",
+      "column": "target_prob__idiopathic_guttate_hypomelanosis"
+    },
+    {
+      "label": "Impetigo",
+      "column": "target_prob__impetigo"
+    },
+    {
+      "label": "Infected eczema",
+      "column": "target_prob__infected_eczema"
+    },
+    {
+      "label": "Infection of skin",
+      "column": "target_prob__infection_of_skin"
+    },
+    {
+      "label": "Infection of tick bite",
+      "column": "target_prob__infection_of_tick_bite"
+    },
+    {
+      "label": "Infection of toe web",
+      "column": "target_prob__infection_of_toe_web"
+    },
+    {
+      "label": "Infestation caused by Sarcoptes scabiei var bovis",
+      "column": "target_prob__infestation_caused_by_sarcoptes_scabiei_var_bovis"
+    },
+    {
+      "label": "Inflammatory dermatosis",
+      "column": "target_prob__inflammatory_dermatosis"
+    },
+    {
+      "label": "Inflicted skin lesions",
+      "column": "target_prob__inflicted_skin_lesions"
+    },
+    {
+      "label": "Ingrown hair",
+      "column": "target_prob__ingrown_hair"
+    },
+    {
+      "label": "Injection site disorder",
+      "column": "target_prob__injection_site_disorder"
+    },
+    {
+      "label": "Insect Bite",
+      "column": "target_prob__insect_bite"
+    },
+    {
+      "label": "Intertrigo",
+      "column": "target_prob__intertrigo"
+    },
+    {
+      "label": "Inverse psoriasis",
+      "column": "target_prob__inverse_psoriasis"
+    },
+    {
+      "label": "Irritant Contact Dermatitis",
+      "column": "target_prob__irritant_contact_dermatitis"
+    },
+    {
+      "label": "Jessner lymphocytic infiltrate",
+      "column": "target_prob__jessner_lymphocytic_infiltrate"
+    },
+    {
+      "label": "Kaposi's sarcoma of skin",
+      "column": "target_prob__kaposi_s_sarcoma_of_skin"
+    },
+    {
+      "label": "Keratoderma",
+      "column": "target_prob__keratoderma"
+    },
+    {
+      "label": "Keratosis",
+      "column": "target_prob__keratosis"
+    },
+    {
+      "label": "Keratosis pilaris",
+      "column": "target_prob__keratosis_pilaris"
+    },
+    {
+      "label": "Knuckle pads",
+      "column": "target_prob__knuckle_pads"
+    },
+    {
+      "label": "Koebner phenomenon",
+      "column": "target_prob__koebner_phenomenon"
+    },
+    {
+      "label": "Lentigo",
+      "column": "target_prob__lentigo"
+    },
+    {
+      "label": "Leprosy",
+      "column": "target_prob__leprosy"
+    },
+    {
+      "label": "Leukemia cutis",
+      "column": "target_prob__leukemia_cutis"
+    },
+    {
+      "label": "Leukocytoclastic Vasculitis",
+      "column": "target_prob__leukocytoclastic_vasculitis"
+    },
+    {
+      "label": "Leukonychia",
+      "column": "target_prob__leukonychia"
+    },
+    {
+      "label": "Lichen Simplex Chronicus",
+      "column": "target_prob__lichen_simplex_chronicus"
+    },
+    {
+      "label": "Lichen nitidus",
+      "column": "target_prob__lichen_nitidus"
+    },
+    {
+      "label": "Lichen planus/lichenoid eruption",
+      "column": "target_prob__lichen_planus_lichenoid_eruption"
+    },
+    {
+      "label": "Lichen sclerosus",
+      "column": "target_prob__lichen_sclerosus"
+    },
+    {
+      "label": "Lichen spinulosus",
+      "column": "target_prob__lichen_spinulosus"
+    },
+    {
+      "label": "Lichen striatus",
+      "column": "target_prob__lichen_striatus"
+    },
+    {
+      "label": "Lichenified eczema",
+      "column": "target_prob__lichenified_eczema"
+    },
+    {
+      "label": "Lichenified eczematous dermatitis",
+      "column": "target_prob__lichenified_eczematous_dermatitis"
+    },
+    {
+      "label": "Lichenoid myxedema",
+      "column": "target_prob__lichenoid_myxedema"
+    },
+    {
+      "label": "Linear IgA disease",
+      "column": "target_prob__linear_iga_disease"
+    },
+    {
+      "label": "Livedo reticularis",
+      "column": "target_prob__livedo_reticularis"
+    },
+    {
+      "label": "Livedoid vasculopathy",
+      "column": "target_prob__livedoid_vasculopathy"
+    },
+    {
+      "label": "Local infection of wound",
+      "column": "target_prob__local_infection_of_wound"
+    },
+    {
+      "label": "Localised cutaneous vasculitis",
+      "column": "target_prob__localised_cutaneous_vasculitis"
+    },
+    {
+      "label": "Localised skin eruption due to drugs and medicaments",
+      "column": "target_prob__localised_skin_eruption_due_to_drugs_and_medicaments"
+    },
+    {
+      "label": "Localised skin infection",
+      "column": "target_prob__localised_skin_infection"
+    },
+    {
+      "label": "Localized cutaneous vasculitis",
+      "column": "target_prob__localized_cutaneous_vasculitis"
+    },
+    {
+      "label": "Localized skin infection",
+      "column": "target_prob__localized_skin_infection"
+    },
+    {
+      "label": "Lymphangioma",
+      "column": "target_prob__lymphangioma"
+    },
+    {
+      "label": "Lymphocutaneous sporotrichosis",
+      "column": "target_prob__lymphocutaneous_sporotrichosis"
+    },
+    {
+      "label": "Lymphomatoid papulosis",
+      "column": "target_prob__lymphomatoid_papulosis"
+    },
+    {
+      "label": "Majocchi granuloma",
+      "column": "target_prob__majocchi_granuloma"
+    },
+    {
+      "label": "Majocchi's granuloma",
+      "column": "target_prob__majocchi_s_granuloma"
+    },
+    {
+      "label": "Melanin pigmentation due to exogenous substance",
+      "column": "target_prob__melanin_pigmentation_due_to_exogenous_substance"
+    },
+    {
+      "label": "Melanocytic Nevus",
+      "column": "target_prob__melanocytic_nevus"
+    },
+    {
+      "label": "Melanoma",
+      "column": "target_prob__melanoma"
+    },
+    {
+      "label": "Melasma",
+      "column": "target_prob__melasma"
+    },
+    {
+      "label": "Milia",
+      "column": "target_prob__milia"
+    },
+    {
+      "label": "Miliaria",
+      "column": "target_prob__miliaria"
+    },
+    {
+      "label": "Mixed diabetic ulcer - foot",
+      "column": "target_prob__mixed_diabetic_ulcer_foot"
+    },
+    {
+      "label": "Molluscum Contagiosum",
+      "column": "target_prob__molluscum_contagiosum"
+    },
+    {
+      "label": "Morphea/Scleroderma",
+      "column": "target_prob__morphea_scleroderma"
+    },
+    {
+      "label": "Muehrcke lines",
+      "column": "target_prob__muehrcke_lines"
+    },
+    {
+      "label": "Mycetoma",
+      "column": "target_prob__mycetoma"
+    },
+    {
+      "label": "Nail dystrophy",
+      "column": "target_prob__nail_dystrophy"
+    },
+    {
+      "label": "Nail dystrophy due to trauma",
+      "column": "target_prob__nail_dystrophy_due_to_trauma"
+    },
+    {
+      "label": "Nail pitting",
+      "column": "target_prob__nail_pitting"
+    },
+    {
+      "label": "Necrobiosis lipoidica",
+      "column": "target_prob__necrobiosis_lipoidica"
+    },
+    {
+      "label": "Neoplasm of uncertain behavior of skin of arm",
+      "column": "target_prob__neoplasm_of_uncertain_behavior_of_skin_of_arm"
+    },
+    {
+      "label": "Non-melanin pigmentation due to exogenous substance (disorder)",
+      "column": "target_prob__non_melanin_pigmentation_due_to_exogenous_substance_disorder"
+    },
+    {
+      "label": "Non-specific panniculitis",
+      "column": "target_prob__non_specific_panniculitis"
+    },
+    {
+      "label": "O/E - ecchymoses present",
+      "column": "target_prob__o_e_ecchymoses_present"
+    },
+    {
+      "label": "O/E - petechiae on skin",
+      "column": "target_prob__o_e_petechiae_on_skin"
+    },
+    {
+      "label": "O/E - petechiae present",
+      "column": "target_prob__o_e_petechiae_present"
+    },
+    {
+      "label": "O/E - purulent pustules",
+      "column": "target_prob__o_e_purulent_pustules"
+    },
+    {
+      "label": "O/E - pustules",
+      "column": "target_prob__o_e_pustules"
+    },
+    {
+      "label": "O/E - skin fissure",
+      "column": "target_prob__o_e_skin_fissure"
+    },
+    {
+      "label": "Ochronosis",
+      "column": "target_prob__ochronosis"
+    },
+    {
+      "label": "On examination - hemorrhagic bullae",
+      "column": "target_prob__on_examination_hemorrhagic_bullae"
+    },
+    {
+      "label": "Onychodystrophy",
+      "column": "target_prob__onychodystrophy"
+    },
+    {
+      "label": "Onychomycosis",
+      "column": "target_prob__onychomycosis"
+    },
+    {
+      "label": "PXE (pseudoxanthoma elasticum) like syndrome",
+      "column": "target_prob__pxe_pseudoxanthoma_elasticum_like_syndrome"
+    },
+    {
+      "label": "Pachyonychia congenita",
+      "column": "target_prob__pachyonychia_congenita"
+    },
+    {
+      "label": "Paget disease",
+      "column": "target_prob__paget_disease"
+    },
+    {
+      "label": "Panniculitis",
+      "column": "target_prob__panniculitis"
+    },
+    {
+      "label": "Panniculitis, NOS",
+      "column": "target_prob__panniculitis_nos"
+    },
+    {
+      "label": "Papular acrodermatitis of childhood",
+      "column": "target_prob__papular_acrodermatitis_of_childhood"
+    },
+    {
+      "label": "Parapsoriasis",
+      "column": "target_prob__parapsoriasis"
+    },
+    {
+      "label": "Paronychia",
+      "column": "target_prob__paronychia"
+    },
+    {
+      "label": "Pemphigoid gestationis",
+      "column": "target_prob__pemphigoid_gestationis"
+    },
+    {
+      "label": "Pemphigus",
+      "column": "target_prob__pemphigus"
+    },
+    {
+      "label": "Pemphigus foliaceus",
+      "column": "target_prob__pemphigus_foliaceus"
+    },
+    {
+      "label": "Pemphigus vulgaris",
+      "column": "target_prob__pemphigus_vulgaris"
+    },
+    {
+      "label": "Perforating dermatosis",
+      "column": "target_prob__perforating_dermatosis"
+    },
+    {
+      "label": "Perifollicular haemorrhage",
+      "column": "target_prob__perifollicular_haemorrhage"
+    },
+    {
+      "label": "Perifolliculitis",
+      "column": "target_prob__perifolliculitis"
+    },
+    {
+      "label": "Perioral Dermatitis",
+      "column": "target_prob__perioral_dermatitis"
+    },
+    {
+      "label": "Perleche",
+      "column": "target_prob__perleche"
+    },
+    {
+      "label": "Petechiae",
+      "column": "target_prob__petechiae"
+    },
+    {
+      "label": "Photocontact dermatitis [berloque dermatitis]",
+      "column": "target_prob__photocontact_dermatitis_berloque_dermatitis"
+    },
+    {
+      "label": "Photodermatitis",
+      "column": "target_prob__photodermatitis"
+    },
+    {
+      "label": "Phytophotodermatitis",
+      "column": "target_prob__phytophotodermatitis"
+    },
+    {
+      "label": "Pigmented purpuric eruption",
+      "column": "target_prob__pigmented_purpuric_eruption"
+    },
+    {
+      "label": "Pincer nail deformity",
+      "column": "target_prob__pincer_nail_deformity"
+    },
+    {
+      "label": "Pityriasis alba",
+      "column": "target_prob__pityriasis_alba"
+    },
+    {
+      "label": "Pityriasis lichenoides",
+      "column": "target_prob__pityriasis_lichenoides"
+    },
+    {
+      "label": "Pityriasis rosea",
+      "column": "target_prob__pityriasis_rosea"
+    },
+    {
+      "label": "Pityriasis rubra pilaris",
+      "column": "target_prob__pityriasis_rubra_pilaris"
+    },
+    {
+      "label": "Poisoning by nematocyst",
+      "column": "target_prob__poisoning_by_nematocyst"
+    },
+    {
+      "label": "Porokeratosis",
+      "column": "target_prob__porokeratosis"
+    },
+    {
+      "label": "Post-Inflammatory hyperpigmentation",
+      "column": "target_prob__post_inflammatory_hyperpigmentation"
+    },
+    {
+      "label": "Post-Inflammatory hypopigmentation",
+      "column": "target_prob__post_inflammatory_hypopigmentation"
+    },
+    {
+      "label": "Pressure ulcer",
+      "column": "target_prob__pressure_ulcer"
+    },
+    {
+      "label": "Pressure ulcer stage 2",
+      "column": "target_prob__pressure_ulcer_stage_2"
+    },
+    {
+      "label": "Pretibial myxedema",
+      "column": "target_prob__pretibial_myxedema"
+    },
+    {
+      "label": "Primary cutaneous lymphoma",
+      "column": "target_prob__primary_cutaneous_lymphoma"
+    },
+    {
+      "label": "Prurigo",
+      "column": "target_prob__prurigo"
+    },
+    {
+      "label": "Prurigo nodularis",
+      "column": "target_prob__prurigo_nodularis"
+    },
+    {
+      "label": "Pruritic urticarial papules and plaques of pregnancy",
+      "column": "target_prob__pruritic_urticarial_papules_and_plaques_of_pregnancy"
+    },
+    {
+      "label": "Pseudolymphoma",
+      "column": "target_prob__pseudolymphoma"
+    },
+    {
+      "label": "Psoriasiform dermatitis",
+      "column": "target_prob__psoriasiform_dermatitis"
+    },
+    {
+      "label": "Psoriasis",
+      "column": "target_prob__psoriasis"
+    },
+    {
+      "label": "Purpura",
+      "column": "target_prob__purpura"
+    },
+    {
+      "label": "Pyoderma",
+      "column": "target_prob__pyoderma"
+    },
+    {
+      "label": "Pyoderma Gangrenosum",
+      "column": "target_prob__pyoderma_gangrenosum"
+    },
+    {
+      "label": "Pyogenic granuloma",
+      "column": "target_prob__pyogenic_granuloma"
+    },
+    {
+      "label": "RMSF - Rocky Mountain spotted fever",
+      "column": "target_prob__rmsf_rocky_mountain_spotted_fever"
+    },
+    {
+      "label": "Remove from labeling tool",
+      "column": "target_prob__remove_from_labeling_tool"
+    },
+    {
+      "label": "Rheumatoid nodule",
+      "column": "target_prob__rheumatoid_nodule"
+    },
+    {
+      "label": "Rosacea",
+      "column": "target_prob__rosacea"
+    },
+    {
+      "label": "Rosai Dorfman disease - I know rare, but I've seen a case like this unilateral.  Rosacea supported bilateral further images",
+      "column": "target_prob__rosai_dorfman_disease_i_know_rare_but_i_ve_seen_a_case_like_this_unilateral_rosacea_supported_bilateral_further_images"
+    },
+    {
+      "label": "SCC/SCCIS",
+      "column": "target_prob__scc_sccis"
+    },
+    {
+      "label": "SK/ISK",
+      "column": "target_prob__sk_isk"
+    },
+    {
+      "label": "SLE - Systemic lupus erythematosus-related syndrome",
+      "column": "target_prob__sle_systemic_lupus_erythematosus_related_syndrome"
+    },
+    {
+      "label": "Scabies",
+      "column": "target_prob__scabies"
+    },
+    {
+      "label": "Scar Condition",
+      "column": "target_prob__scar_condition"
+    },
+    {
+      "label": "Seborrheic Dermatitis",
+      "column": "target_prob__seborrheic_dermatitis"
+    },
+    {
+      "label": "Secondary impetiginization",
+      "column": "target_prob__secondary_impetiginization"
+    },
+    {
+      "label": "Skin and soft tissue atypical mycobacterial infection",
+      "column": "target_prob__skin_and_soft_tissue_atypical_mycobacterial_infection"
+    },
+    {
+      "label": "Skin atrophy",
+      "column": "target_prob__skin_atrophy"
+    },
+    {
+      "label": "Skin cancer",
+      "column": "target_prob__skin_cancer"
+    },
+    {
+      "label": "Skin infection",
+      "column": "target_prob__skin_infection"
+    },
+    {
+      "label": "Skin lesion in drug addict",
+      "column": "target_prob__skin_lesion_in_drug_addict"
+    },
+    {
+      "label": "Skin striae",
+      "column": "target_prob__skin_striae"
+    },
+    {
+      "label": "Skin ulcer",
+      "column": "target_prob__skin_ulcer"
+    },
+    {
+      "label": "Small plaque parapsoriasis",
+      "column": "target_prob__small_plaque_parapsoriasis"
+    },
+    {
+      "label": "Snake bite - wound",
+      "column": "target_prob__snake_bite_wound"
+    },
+    {
+      "label": "Sneddon-Wilkinson disease",
+      "column": "target_prob__sneddon_wilkinson_disease"
+    },
+    {
+      "label": "Stasis Dermatitis",
+      "column": "target_prob__stasis_dermatitis"
+    },
+    {
+      "label": "Sunburn",
+      "column": "target_prob__sunburn"
+    },
+    {
+      "label": "Superficial wound of body region",
+      "column": "target_prob__superficial_wound_of_body_region"
+    },
+    {
+      "label": "Sweet syndrome",
+      "column": "target_prob__sweet_syndrome"
+    },
+    {
+      "label": "Syphilis",
+      "column": "target_prob__syphilis"
+    },
+    {
+      "label": "TMEP - telangiectasia macularis eruptiva perstans",
+      "column": "target_prob__tmep_telangiectasia_macularis_eruptiva_perstans"
+    },
+    {
+      "label": "Tinea",
+      "column": "target_prob__tinea"
+    },
+    {
+      "label": "Tinea Versicolor",
+      "column": "target_prob__tinea_versicolor"
+    },
+    {
+      "label": "Traumatic blister",
+      "column": "target_prob__traumatic_blister"
+    },
+    {
+      "label": "Traumatic petechiae",
+      "column": "target_prob__traumatic_petechiae"
+    },
+    {
+      "label": "Traumatic ulcer",
+      "column": "target_prob__traumatic_ulcer"
+    },
+    {
+      "label": "Tuberculosis of skin and subcutaneous tissue",
+      "column": "target_prob__tuberculosis_of_skin_and_subcutaneous_tissue"
+    },
+    {
+      "label": "Tufted angioma of skin",
+      "column": "target_prob__tufted_angioma_of_skin"
+    },
+    {
+      "label": "Urticaria",
+      "column": "target_prob__urticaria"
+    },
+    {
+      "label": "Urticarial vasculitis",
+      "column": "target_prob__urticarial_vasculitis"
+    },
+    {
+      "label": "Varicose veins of lower extremity",
+      "column": "target_prob__varicose_veins_of_lower_extremity"
+    },
+    {
+      "label": "Vasculitis of the skin",
+      "column": "target_prob__vasculitis_of_the_skin"
+    },
+    {
+      "label": "Vasculitis of the skin, NOS",
+      "column": "target_prob__vasculitis_of_the_skin_nos"
+    },
+    {
+      "label": "Venous Stasis Ulcer",
+      "column": "target_prob__venous_stasis_ulcer"
+    },
+    {
+      "label": "Verruca vulgaris",
+      "column": "target_prob__verruca_vulgaris"
+    },
+    {
+      "label": "Viral Exanthem",
+      "column": "target_prob__viral_exanthem"
+    },
+    {
+      "label": "Viral dermatological disorders",
+      "column": "target_prob__viral_dermatological_disorders"
+    },
+    {
+      "label": "Viral infection of skin",
+      "column": "target_prob__viral_infection_of_skin"
+    },
+    {
+      "label": "Vitiligo",
+      "column": "target_prob__vitiligo"
+    },
+    {
+      "label": "Xanthoma",
+      "column": "target_prob__xanthoma"
+    },
+    {
+      "label": "Xerosis",
+      "column": "target_prob__xerosis"
+    },
+    {
+      "label": "deep fungal infection",
+      "column": "target_prob__deep_fungal_infection__2"
+    },
+    {
+      "label": "gouty tophi",
+      "column": "target_prob__gouty_tophi"
+    },
+    {
+      "label": "granular parakeratosis",
+      "column": "target_prob__granular_parakeratosis"
+    },
+    {
+      "label": "hyperlinear palm",
+      "column": "target_prob__hyperlinear_palm"
+    },
+    {
+      "label": "panniculitis of skin",
+      "column": "target_prob__panniculitis_of_skin"
+    },
+    {
+      "label": "pathergy",
+      "column": "target_prob__pathergy"
+    },
+    {
+      "label": "post-sunburn peeling/superficial desquamation",
+      "column": "target_prob__post_sunburn_peeling_superficial_desquamation"
+    },
+    {
+      "label": "relapsing polychondritis",
+      "column": "target_prob__relapsing_polychondritis"
+    },
+    {
+      "label": "resolving dermatitis",
+      "column": "target_prob__resolving_dermatitis"
+    },
+    {
+      "label": "scurvy",
+      "column": "target_prob__scurvy"
+    },
+    {
+      "label": "superficial hemorrhage",
+      "column": "target_prob__superficial_hemorrhage"
+    },
+    {
+      "label": "varicose vein",
+      "column": "target_prob__varicose_vein"
+    },
+    {
+      "label": "wound/abrasion",
+      "column": "target_prob__wound_abrasion"
+    }
+  ],
+  "group_column": "case_id",
+  "random_state": 42,
+  "test_size": 0.2,
+  "train_rows_total": 9113,
+  "train_rows_labeled": 5224,
+  "train_rows_unlabeled": 3889,
+  "test_rows_labeled": 1294,
+  "target_parse_errors_total": 0,
+  "test_rows_with_unseen_target_mass": 82,
+  "scale_numeric": true,
+  "scaled_numeric_columns": [
+    "image_index",
+    "case_image_count",
+    "sample_weight_case_inverse",
+    "n_textures",
+    "n_body_parts",
+    "n_condition_symptoms",
+    "n_other_symptoms",
+    "fitzpatrick_skin_type_ordinal",
+    "age_group_start"
+  ],
+  "train_cases_total": 4420,
+  "train_cases_labeled": 2448,
+  "train_cases_unlabeled": 1972,
+  "test_cases_labeled": 613,
+  "feature_count": 122,
+  "feature_columns": [
+    "year",
+    "race_ethnicity_american_indian_or_alaska_native",
+    "race_ethnicity_asian",
+    "race_ethnicity_black_or_african_american",
+    "race_ethnicity_hispanic_latino_or_spanish_origin",
+    "race_ethnicity_middle_eastern_or_north_african",
+    "race_ethnicity_native_hawaiian_or_pacific_islander",
+    "race_ethnicity_white",
+    "race_ethnicity_other_race",
+    "race_ethnicity_prefer_not_to_answer",
+    "textures_raised_or_bumpy",
+    "textures_flat",
+    "textures_rough_or_flaky",
+    "textures_fluid_filled",
+    "body_parts_head_or_neck",
+    "body_parts_arm",
+    "body_parts_palm",
+    "body_parts_back_of_hand",
+    "body_parts_torso_front",
+    "body_parts_torso_back",
+    "body_parts_genitalia_or_groin",
+    "body_parts_buttocks",
+    "body_parts_leg",
+    "body_parts_foot_top_or_side",
+    "body_parts_foot_sole",
+    "body_parts_other",
+    "condition_symptoms_bothersome_appearance",
+    "condition_symptoms_bleeding",
+    "condition_symptoms_increasing_size",
+    "condition_symptoms_darkening",
+    "condition_symptoms_itching",
+    "condition_symptoms_burning",
+    "condition_symptoms_pain",
+    "condition_symptoms_no_relevant_experience",
+    "other_symptoms_fever",
+    "other_symptoms_chills",
+    "other_symptoms_fatigue",
+    "other_symptoms_joint_pain",
+    "other_symptoms_mouth_sores",
+    "other_symptoms_shortness_of_breath",
+    "other_symptoms_no_relevant_symptoms",
+    "race_ethnicity_two_or_more_after_mitigation",
+    "image_index",
+    "case_image_count",
+    "sample_weight_case_inverse",
+    "n_textures",
+    "n_body_parts",
+    "n_condition_symptoms",
+    "n_other_symptoms",
+    "condition_symptoms_conflict_flag",
+    "other_symptoms_conflict_flag",
+    "fitzpatrick_skin_type_none_identified_flag",
+    "fitzpatrick_skin_type_ordinal",
+    "age_group_unknown_flag",
+    "age_group_start",
+    "sex_at_birth_other_or_unspecified_flag",
+    "sex_at_birth_missing_flag",
+    "condition_duration_missing_flag",
+    "condition_duration_unknown_flag",
+    "related_category_missing_flag",
+    "related_category_none_of_above_flag",
+    "source_SCIN",
+    "release_1.0.0",
+    "age_group_AGE_18_TO_29",
+    "age_group_AGE_30_TO_39",
+    "age_group_AGE_40_TO_49",
+    "age_group_AGE_50_TO_59",
+    "age_group_AGE_60_TO_69",
+    "age_group_AGE_70_TO_79",
+    "age_group_AGE_UNKNOWN",
+    "age_group_MISSING",
+    "sex_at_birth_FEMALE",
+    "sex_at_birth_MALE",
+    "sex_at_birth_MISSING",
+    "sex_at_birth_OTHER_OR_UNSPECIFIED",
+    "fitzpatrick_skin_type_FST1",
+    "fitzpatrick_skin_type_FST2",
+    "fitzpatrick_skin_type_FST3",
+    "fitzpatrick_skin_type_FST4",
+    "fitzpatrick_skin_type_FST5",
+    "fitzpatrick_skin_type_FST6",
+    "fitzpatrick_skin_type_MISSING",
+    "fitzpatrick_skin_type_NONE_IDENTIFIED",
+    "related_category_ACNE",
+    "related_category_GROWTH_OR_MOLE",
+    "related_category_HAIR_LOSS",
+    "related_category_LOOKS_HEALTHY",
+    "related_category_MISSING",
+    "related_category_NAIL_PROBLEM",
+    "related_category_OTHER_HAIR_PROBLEM",
+    "related_category_OTHER_ISSUE_DESCRIPTION",
+    "related_category_PIGMENTARY_PROBLEM",
+    "related_category_RASH",
+    "condition_duration_LESS_THAN_ONE_WEEK",
+    "condition_duration_MISSING",
+    "condition_duration_MORE_THAN_FIVE_YEARS",
+    "condition_duration_MORE_THAN_ONE_YEAR",
+    "condition_duration_ONE_DAY",
+    "condition_duration_ONE_TO_FOUR_WEEKS",
+    "condition_duration_ONE_TO_THREE_MONTHS",
+    "condition_duration_SINCE_CHILDHOOD",
+    "condition_duration_THREE_TO_TWELVE_MONTHS",
+    "condition_duration_UNKNOWN",
+    "combined_race_AMERICAN_INDIAN_OR_ALASKA_NATIVE",
+    "combined_race_AMERICAN_INDIAN_OR_ALASKA_NATIVE,WHITE",
+    "combined_race_ASIAN",
+    "combined_race_ASIAN,WHITE",
+    "combined_race_BLACK_OR_AFRICAN_AMERICAN",
+    "combined_race_BLACK_OR_AFRICAN_AMERICAN,HISPANIC_LATINO_OR_SPANISH_ORIGIN",
+    "combined_race_BLACK_OR_AFRICAN_AMERICAN,WHITE",
+    "combined_race_HISPANIC_LATINO_OR_SPANISH_ORIGIN",
+    "combined_race_HISPANIC_LATINO_OR_SPANISH_ORIGIN,WHITE",
+    "combined_race_MIDDLE_EASTERN_OR_NORTH_AFRICAN",
+    "combined_race_MISSING",
+    "combined_race_NATIVE_HAWAIIAN_OR_PACIFIC_ISLANDER",
+    "combined_race_OTHER_RACE",
+    "combined_race_PREFER_NOT_TO_ANSWER",
+    "combined_race_TWO_OR_MORE_AFTER_MITIGATION",
+    "combined_race_WHITE",
+    "image_shot_type_AT_AN_ANGLE",
+    "image_shot_type_AT_DISTANCE",
+    "image_shot_type_CLOSE_UP"
+  ]
+}
