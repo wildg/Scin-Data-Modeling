@@ -1,18 +1,22 @@
-# SCIN Data Modeling: Dermatological Condition Prediction
+# SCIN Data Pipeline: Download + Cleaning
 
 **INSY 674 Group Project**
 
 ## Project Overview
 
-This project develops a machine learning model to predict dermatological skin conditions based on clinical data from the SCIN (Skin Condition Image Network) dataset. The model aims to predict what diagnosis a dermatologist might assign to a case based on patient demographics, symptoms, physical characteristics, and clinical observations.
+This project currently focuses on building a reliable base data pipeline for the SCIN (Skin Condition Image Network) dataset:
+- Download raw SCIN metadata and images
+- Merge and clean case + label data
+- Produce a cleaned modeling-ready table for downstream work
+
+This repository does **not** currently include EDA, feature engineering, model training, or performance evaluation as part of the primary workflow.
 
 ## Objectives
 
-The primary goal is to build a predictive model that can:
-- Accurately predict dermatologist-assigned skin condition diagnoses
-- Handle multi-class classification across various skin conditions
-- Account for diverse skin types and demographic factors
-- Provide interpretable results for clinical decision support
+The current objective is data quality and reproducible preprocessing:
+- Standardized ingestion from the SCIN public bucket
+- Consistent cleaned dataset generation
+- Clear label handling for downstream multi-label experiments
 
 ## Dataset
 
@@ -41,98 +45,127 @@ The SCIN dataset contains dermatological cases with comprehensive clinical infor
 - Skin condition confidence scores
 - Image gradability assessments
 
-## Project Workflow
+## Current Workflow
 
-### 1. Exploratory Data Analysis (EDA)
-- Data loading and merging
-- Missing value analysis
-- Distribution analysis of demographics and clinical features
-- Visualization of key patterns and relationships
-- Understanding class distributions and imbalances
+### 1) Download
+- Download SCIN CSV files (`scin_cases.csv`, `scin_labels.csv`, etc.)
+- Optionally download all images
 
-### 2. Data Preparation & Feature Engineering
-- Handling missing values (imputation strategies)
-- Feature encoding (one-hot encoding, label encoding)
-- Feature scaling and normalization
-- Feature selection based on importance
-- Addressing class imbalance (if needed)
-- Train-test split with stratification
-
-### 3. Modeling
-- Baseline model establishment
-- Multiple algorithm comparison:
-  - Logistic Regression
-  - Random Forest
-  - Gradient Boosting (XGBoost, LightGBM)
-  - Support Vector Machines
-  - Neural Networks (if applicable)
-- Cross-validation strategies
-
-### 4. Model Evaluation & Hyperparameter Tuning
-- Performance metrics:
-  - Accuracy, Precision, Recall, F1-Score
-  - Confusion matrices
-  - ROC-AUC curves (for multi-class)
-  - Classification reports
-- Hyperparameter optimization:
-  - Grid Search
-  - Random Search
-  - Bayesian Optimization (optional)
-- Feature importance analysis
-- Error analysis
-
-### 5. Model Selection & Final Evaluation
-- Compare models based on multiple metrics
-- Select best performing model
-- Final evaluation on test set
-- Model interpretability and insights
-- Discussion of limitations and future improvements
+### 2) Preprocess (Cleaning)
+- Merge `scin_cases.csv` and `scin_labels.csv` on `case_id`
+- Parse `dermatologist_skin_condition_on_label_name`
+- Drop rows without usable labels or without image paths
+- Build:
+  - `image_paths` (JSON list)
+  - `num_images`
+  - `label_all` (deduplicated full condition list)
+  - `label` (first 3 labels, JSON list)
+- Save cleaned output to `data/processed/cleaned.csv`
+- Optional: create `train.csv` / `test.csv` split
 
 ## Repository Structure
 
 ```
 Scin-Data-Modeling/
 ├── README.md
-├── model.ipynb              # Main Jupyter notebook with complete workflow
+├── model.ipynb              # Notebook sandbox (not part of base pipeline)
 ├── data/
-│   ├── dataset_scin_cases.csv
-│   └── dataset_scin_labels.csv
-└── images/                  # (Referenced in dataset, if applicable)
+│   ├── raw/
+│   │   └── dataset/
+│   │       ├── scin_cases.csv
+│   │       ├── scin_labels.csv
+│   │       └── images/
+│   └── processed/
+│       ├── cleaned.csv
+│       ├── train.csv        # optional
+│       └── test.csv         # optional
+└── scin_data_modeling/
+    ├── cli.py
+    └── data/
+        ├── download.py
+        └── preprocess.py
 ```
 
 ## Technical Requirements
 
 ### Python Libraries
-- **Data Manipulation:** pandas, numpy
-- **Visualization:** matplotlib, seaborn
-- **Machine Learning:** scikit-learn, xgboost, lightgbm
-- **Statistical Analysis:** scipy, statsmodels
-- **Utilities:** ast, collections
+- `pandas`, `numpy`
+- `google-cloud-storage`, `tqdm`
+- `typer`, `rich`
+- `scikit-learn` (only for optional train/test split utility)
 
 ### Installation
 ```bash
-pip install pandas numpy matplotlib seaborn scikit-learn xgboost lightgbm scipy
+pip install -e .
 ```
 
 ## Usage
 
-1. Clone the repository
-2. Ensure all required libraries are installed
-3. Open `model.ipynb` in Jupyter Notebook or JupyterLab
-4. Run cells sequentially to:
-   - Load and explore the data
-   - Prepare features
-   - Train models
-   - Evaluate performance
-   - Select final model
+### Run base pipeline (download + cleaning)
 
-## Key Findings (To be updated)
+```bash
+scin_data_modeling pipeline --no-images
+```
 
-This section will be updated with:
-- Best performing model and its metrics
-- Important features for prediction
-- Insights about skin condition classification
-- Model limitations and considerations
+### Run without downloading images (metadata-only)
+
+Use this mode when you want CSV ingestion + cleaning only and do not want to download image files.
+
+```bash
+scin_data_modeling pipeline --no-images
+```
+
+You can also run step-by-step:
+
+```bash
+scin_data_modeling download --no-images
+scin_data_modeling preprocess --no-create-split
+```
+
+### Run steps individually
+
+```bash
+scin_data_modeling download --no-images
+scin_data_modeling preprocess --no-create-split
+```
+
+### Optional split creation
+
+```bash
+scin_data_modeling preprocess --create-split --test-size 0.2 --seed 42
+```
+
+### Optional image embeddings during preprocessing (ResNet)
+
+If you want CNN image embeddings as part of preprocessing, enable embedding creation.
+The default backbone is `resnet50`.
+
+```bash
+scin_data_modeling preprocess \
+  --create-embeddings \
+  --embedding-backbone resnet50 \
+  --embedding-device cpu
+```
+
+You can run the same flow through the pipeline command:
+
+```bash
+scin_data_modeling pipeline --no-images --create-embeddings --embedding-backbone resnet50
+```
+
+Embeddings are generated by streaming images directly from the SCIN GCS bucket; local image files are not required.
+
+### Output
+
+- Primary artifact: `data/processed/cleaned.csv`
+- Optional artifacts: `data/processed/train.csv`, `data/processed/test.csv`
+- Optional embedding artifacts: `data/processed/embeddings_train.npz`, `data/processed/embeddings_test.npz`
+
+## Notes on Labels
+
+- Raw target source: `dermatologist_skin_condition_on_label_name` in `scin_labels.csv`
+- Cleaned `label_all`: deduplicated full list of condition names per case
+- Cleaned `label`: first 3 items from `label_all` for downstream top-3 prediction workflows
 
 ## Contributors
 
