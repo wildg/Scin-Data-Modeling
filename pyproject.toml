@@ -52,6 +52,10 @@ docs = [
     "zensical",
     "mkdocstrings-python",
 ]
+dashboard = [
+    "streamlit>=1.40.0",
+    "plotly>=5.0.0",
+]
 
 [project.urls]
 bugs = "https://github.com/wildg/scin_data_modeling/issues"
@@ -103,3 +107,4 @@ exclude_also = [
 [tool.uv]
 package = true
 default-groups = ["dev"]
+override-dependencies = ["pandas>=3.0.1"]

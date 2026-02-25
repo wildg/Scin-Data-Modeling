@@ -121,10 +121,15 @@ Scin-Data-Modeling/
 - `typer`, `rich`
 - `scikit-learn`
 - `torch`, `torchvision`
+- `streamlit`, `plotly` (dashboard only)
 
 ### Installation
 ```bash
-pip install -e .
+# Core pipeline
+uv sync
+
+# Core pipeline + Streamlit dashboard
+uv sync --group dashboard
 ```
 
 ## Usage
@@ -176,6 +181,28 @@ uv run scin_data_modeling evaluate --processed-dir data/processed --model-dir mo
 | `data/processed/embeddings_train.npz` | ResNet50 features (2448 × 2048) |
 | `data/processed/embeddings_test.npz` | ResNet50 features (613 × 2048) |
 | `models/baseline_logreg.joblib` | Trained classifier + label binarizer |
+
+### Streamlit Dashboard
+
+An interactive dashboard for exploring the data and model results. Requires the model to be trained first.
+
+**Install dashboard dependencies:**
+```bash
+uv sync --group dashboard
+```
+
+**Launch the dashboard:**
+```bash
+uv run --group dashboard streamlit run app.py
+```
+
+Opens automatically at `http://localhost:8501`. Three pages are available via the sidebar:
+
+| Page | Contents |
+|------|----------|
+| **Model Performance** | 8 summary metric cards, per-class F1 bar chart for top 20 conditions, metric interpretation |
+| **Data Explorer** | Top 20 most common conditions, labels-per-case histogram, demographic breakdowns (age, Fitzpatrick skin type, race, sex) |
+| **Prediction Explorer** | Select any test case (0–612) to see true labels vs model predictions with confidence scores, color-coded correct/incorrect |
 
 ## Baseline Model Results
 
