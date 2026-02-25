@@ -130,7 +130,9 @@ def _embed(backbone_name: str, split: str, device_str: str, processed_dir: Path)
     console.print("[green]✓ Embedding complete.[/green]")
 
 
-def _train(mode: str, processed_dir: Path, model_dir: Path, backbone_name: str, device_str: str) -> None:
+def _train(
+    mode: str, processed_dir: Path, model_dir: Path, backbone_name: str, device_str: str, model_name: str
+) -> None:
     console.print(Rule("[bold blue]Step 4 — Train[/bold blue]"))
 
     if mode == "frozen":
@@ -142,11 +144,22 @@ def _train(mode: str, processed_dir: Path, model_dir: Path, backbone_name: str, 
             raise typer.Exit(code=1)
         console.print("  Mode: [cyan]frozen[/cyan] — training head on cached embeddings")
         console.print(f"  Embeddings: {train_emb}")
+        console.print(f"  Model:      [cyan]{model_name}[/cyan]")
 
-        from scin_data_modeling.models.baseline import train_baseline
+        if model_name == "logreg":
+            from scin_data_modeling.models.baseline import train_baseline
 
-        console.print("Training logistic regression baseline…")
-        artifact_path = train_baseline(processed_dir=processed_dir, model_dir=model_dir)
+            console.print("Training logistic regression baseline…")
+            artifact_path = train_baseline(processed_dir=processed_dir, model_dir=model_dir)
+        elif model_name == "xgboost":
+            from scin_data_modeling.models.xgboost_model import train_xgboost
+
+            console.print("Training XGBoost model…")
+            artifact_path = train_xgboost(processed_dir=processed_dir, model_dir=model_dir)
+        else:
+            console.print(f"[red]Unknown model: {model_name!r}. Use 'logreg' or 'xgboost'.[/red]")
+            raise typer.Exit(code=1)
+
         console.print(f"[green]✓ Model saved to {artifact_path}[/green]")
     elif mode == "finetune":
         console.print("  Mode: [cyan]finetune[/cyan] — end-to-end with GCS streaming")
@@ -160,14 +173,25 @@ def _train(mode: str, processed_dir: Path, model_dir: Path, backbone_name: str, 
         raise typer.Exit(code=1)
 
 
-def _evaluate(processed_dir: Path, model_dir: Path) -> None:
+_MODEL_FILENAMES = {
+    "logreg": "baseline_logreg.joblib",
+    "xgboost": "xgboost_model.joblib",
+}
+
+
+def _evaluate(processed_dir: Path, model_dir: Path, model_name: str) -> None:
     console.print(Rule("[bold blue]Step 5 — Evaluate[/bold blue]"))
 
-    model_path = Path(model_dir) / "baseline_logreg.joblib"
+    if model_name not in _MODEL_FILENAMES:
+        console.print(f"[red]Unknown model: {model_name!r}. Use 'logreg' or 'xgboost'.[/red]")
+        raise typer.Exit(code=1)
+
+    model_path = Path(model_dir) / _MODEL_FILENAMES[model_name]
+    console.print(f"  Model: [cyan]{model_name}[/cyan]")
     if not model_path.exists():
         console.print(
             f"[red]Model not found at {model_path}.[/red]\n"
-            "  Run [bold]scin_data_modeling train --mode frozen[/bold] first."
+            f"  Run [bold]scin_data_modeling train --mode frozen --model {model_name}[/bold] first."
         )
         raise typer.Exit(code=1)
 
@@ -255,22 +279,31 @@ def embed(
 @app.command()
 def train(
     mode: str = typer.Option("frozen", help="Training mode: 'frozen' (head only) or 'finetune' (end-to-end)."),
+    model: str = typer.Option("logreg", help="Model to train: 'logreg' or 'xgboost'."),
     backbone: str = typer.Option("resnet50", help="Backbone for finetune mode."),
     device: str = typer.Option("cpu", help="Torch device (cpu, cuda, mps)."),
     processed_dir: Path = typer.Option(Path("data/processed"), help="Directory containing processed splits."),
     model_dir: Path = typer.Option(Path("models"), help="Directory to save trained model artefacts."),
 ) -> None:
     """Train a model. Use --mode frozen (on cached embeddings) or --mode finetune (stream from GCS)."""
-    _train(mode=mode, processed_dir=processed_dir, model_dir=model_dir, backbone_name=backbone, device_str=device)
+    _train(
+        mode=mode,
+        processed_dir=processed_dir,
+        model_dir=model_dir,
+        backbone_name=backbone,
+        device_str=device,
+        model_name=model,
+    )
 
 
 @app.command()
 def evaluate(
+    model: str = typer.Option("logreg", help="Model to evaluate: 'logreg' or 'xgboost'."),
     processed_dir: Path = typer.Option(Path("data/processed"), help="Directory containing processed splits."),
     model_dir: Path = typer.Option(Path("models"), help="Directory containing trained model artefacts."),
 ) -> None:
-    """Evaluate the trained model on the test split. (Not yet implemented.)"""
-    _evaluate(processed_dir=processed_dir, model_dir=model_dir)
+    """Evaluate a trained model on the test split."""
+    _evaluate(processed_dir=processed_dir, model_dir=model_dir, model_name=model)
 
 
 @app.command()
