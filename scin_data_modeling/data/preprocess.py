@@ -15,6 +15,11 @@ import pandas as pd
 RAW_DATA_DIR = Path("data/raw")
 PROCESSED_DATA_DIR = Path("data/processed")
 
+# Value used in the raw labels CSV to indicate an image was considered gradable
+# by a dermatologist rater. Several columns in the labels CSV use this exact
+# string; it's exported here for reuse by notebooks and scripts.
+GRADABLE_VALUE = "DEFAULT_YES_IMAGE_QUALITY_SUFFICIENT"
+
 # Demographic / feature columns to carry from scin_cases.csv into the splits.
 CASE_FEATURE_COLS = [
     "age_group",
