@@ -1,22 +1,21 @@
-# SCIN Data Pipeline: Download + Cleaning
+# SCIN Data Modeling Pipeline
 
 **INSY 674 Group Project**
 
 ## Project Overview
 
-This project currently focuses on building a reliable base data pipeline for the SCIN (Skin Condition Image Network) dataset:
+This project builds an end-to-end pipeline for the SCIN (Skin Condition Image Network) dataset to predict multi-label skin condition diagnoses:
 - Download raw SCIN metadata and images
 - Merge and clean case + label data
-- Produce a cleaned modeling-ready table for downstream work
-
-This repository does **not** currently include EDA, feature engineering, model training, or performance evaluation as part of the primary workflow.
+- Extract image embeddings via a frozen ResNet50 backbone
+- Train and evaluate classification models
 
 ## Objectives
 
-The current objective is data quality and reproducible preprocessing:
 - Standardized ingestion from the SCIN public bucket
-- Consistent cleaned dataset generation
-- Clear label handling for downstream multi-label experiments
+- Consistent cleaned dataset generation with multi-label support
+- Image feature extraction via frozen CNN backbones
+- Modular model training and evaluation pipeline
 
 ## Dataset
 
@@ -45,7 +44,7 @@ The SCIN dataset contains dermatological cases with comprehensive clinical infor
 - Skin condition confidence scores
 - Image gradability assessments
 
-## Current Workflow
+## Pipeline Stages
 
 ### 1) Download
 - Download SCIN CSV files (`scin_cases.csv`, `scin_labels.csv`, etc.)
@@ -61,14 +60,31 @@ The SCIN dataset contains dermatological cases with comprehensive clinical infor
   - `label_all` (deduplicated full condition list)
   - `label` (first 3 labels, JSON list)
 - Save cleaned output to `data/processed/cleaned.csv`
-- Optional: create `train.csv` / `test.csv` split
+- Optional: create `train.csv` / `test.csv` split (80/20, seed 42)
+- Result: 3,061 cleaned cases → 2,448 train / 613 test
+
+### 3) Embed
+- Stream images directly from GCS (no local download needed)
+- Pass each image through a frozen ResNet50 backbone (ImageNet pretrained)
+- Mean-pool embeddings across 1–3 images per case
+- Save as `.npz` files: `embeddings_train.npz` (2448 × 2048), `embeddings_test.npz` (613 × 2048)
+
+### 4) Train — Logistic Regression Baseline
+- Load cached ResNet50 embeddings (`embeddings_train.npz`)
+- Binarize the multi-label targets: fit a `MultiLabelBinarizer` on training labels across all 370 unique skin conditions, producing a binary matrix of shape (2448 × 370)
+- Train a `OneVsRestClassifier` wrapping `LogisticRegression (lbfgs solver)` — one binary classifier per condition, run in parallel via `n_jobs=-1`
+- Save the classifier and binarizer together as `models/baseline_logreg.joblib`
+
+### 5) Evaluate
+- Load test embeddings and the saved model artifact
+- Binarize test labels using the **training** binarizer (no label leakage)
+- Compute multi-label metrics and print a results table
 
 ## Repository Structure
 
 ```
 Scin-Data-Modeling/
 ├── README.md
-├── model.ipynb              # Notebook sandbox (not part of base pipeline)
 ├── data/
 │   ├── raw/
 │   │   └── dataset/
@@ -77,13 +93,24 @@ Scin-Data-Modeling/
 │   │       └── images/
 │   └── processed/
 │       ├── cleaned.csv
-│       ├── train.csv        # optional
-│       └── test.csv         # optional
+│       ├── train.csv
+│       ├── test.csv
+│       ├── embeddings_train.npz
+│       └── embeddings_test.npz
+├── models/
+│   └── baseline_logreg.joblib   # saved after training
 └── scin_data_modeling/
     ├── cli.py
-    └── data/
-        ├── download.py
-        └── preprocess.py
+    ├── data/
+    │   ├── download.py
+    │   ├── preprocess.py
+    │   ├── embed.py
+    │   └── streaming.py
+    ├── models/
+    │   ├── backbone.py          # ResNet50 / EfficientNet-B0
+    │   └── baseline.py          # logistic regression baseline
+    └── evaluation/
+        └── metrics.py           # multi-label evaluation metrics
 ```
 
 ## Technical Requirements
@@ -92,7 +119,8 @@ Scin-Data-Modeling/
 - `pandas`, `numpy`
 - `google-cloud-storage`, `tqdm`
 - `typer`, `rich`
-- `scikit-learn` (only for optional train/test split utility)
+- `scikit-learn`
+- `torch`, `torchvision`
 
 ### Installation
 ```bash
@@ -101,65 +129,80 @@ pip install -e .
 
 ## Usage
 
-### Run base pipeline (download + cleaning)
+### Full pipeline from scratch
 
 ```bash
-scin_data_modeling pipeline --no-images
+# 1. Download CSVs
+uv run scin_data_modeling download --no-images
+
+# 2. Preprocess and create train/test split
+uv run scin_data_modeling preprocess --create-split --test-size 0.2 --seed 42
+
+# 3. Generate image embeddings (streams from GCS, no local images needed)
+uv run scin_data_modeling embed --backbone resnet50 --device cpu
+
+# 4. Train the logistic regression baseline
+uv run scin_data_modeling train --mode frozen
+
+# 5. Evaluate on the test set
+uv run scin_data_modeling evaluate
 ```
 
-### Run without downloading images (metadata-only)
-
-Use this mode when you want CSV ingestion + cleaning only and do not want to download image files.
+### Run just the model (if data and embeddings already exist)
 
 ```bash
-scin_data_modeling pipeline --no-images
+uv run scin_data_modeling train --mode frozen
+uv run scin_data_modeling evaluate
 ```
 
-You can also run step-by-step:
+### Options
 
 ```bash
-scin_data_modeling download --no-images
-scin_data_modeling preprocess --no-create-split
+# Use a different device for embedding generation (e.g. Apple Silicon)
+uv run scin_data_modeling embed --device mps
+
+# Custom data/model directories
+uv run scin_data_modeling train --mode frozen --processed-dir data/processed --model-dir models
+uv run scin_data_modeling evaluate --processed-dir data/processed --model-dir models
 ```
 
-### Run steps individually
+### Output artifacts
 
-```bash
-scin_data_modeling download --no-images
-scin_data_modeling preprocess --no-create-split
-```
+| File | Description |
+|------|-------------|
+| `data/processed/cleaned.csv` | All 3,061 cleaned cases |
+| `data/processed/train.csv` | 2,448 training cases |
+| `data/processed/test.csv` | 613 test cases |
+| `data/processed/embeddings_train.npz` | ResNet50 features (2448 × 2048) |
+| `data/processed/embeddings_test.npz` | ResNet50 features (613 × 2048) |
+| `models/baseline_logreg.joblib` | Trained classifier + label binarizer |
 
-### Optional split creation
+## Baseline Model Results
 
-```bash
-scin_data_modeling preprocess --create-split --test-size 0.2 --seed 42
-```
+The logistic regression baseline was evaluated on the 613-case held-out test set. It predicts across 370 unique skin condition classes using ResNet50 image embeddings as features.
 
-### Optional image embeddings during preprocessing (ResNet)
+| Metric | Value | Interpretation |
+|--------|-------|----------------|
+| **Hamming Loss** | 0.0083 | On average, 0.83% of the 370 label slots are wrong per case — low because most labels are correctly predicted as absent |
+| **F1 (micro)** | 0.1857 | Aggregate F1 across all label occurrences; the model captures roughly 1 in 5 correct label predictions overall |
+| **F1 (macro)** | 0.0163 | Per-class F1 averaged equally across all 370 conditions; very low because many rare conditions get zero predictions |
+| **F1 (weighted)** | 0.1583 | Per-class F1 weighted by class frequency; closer to micro F1, dominated by the more common conditions |
+| **Precision (micro)** | 0.2973 | When the model predicts a label, it is correct ~30% of the time |
+| **Recall (micro)** | 0.1350 | The model finds ~14% of all true labels in the test set |
+| **Precision (macro)** | 0.0290 | Averaged per-class; low due to many rare classes with sparse predictions |
+| **Recall (macro)** | 0.0128 | Averaged per-class; the model misses most instances of rare conditions |
 
-If you want CNN image embeddings as part of preprocessing, enable embedding creation.
-The default backbone is `resnet50`.
+### Interpreting the results
 
-```bash
-scin_data_modeling preprocess \
-  --create-embeddings \
-  --embedding-backbone resnet50 \
-  --embedding-device cpu
-```
+**Hamming Loss (0.0083)** appears excellent but is misleading for sparse multi-label problems. With 370 classes and only 1–3 true labels per case, the vast majority of label slots are 0 — predicting all zeros would also score well on this metric. Micro F1 is a better headline number.
 
-You can run the same flow through the pipeline command:
+**Micro F1 (0.1857)** reflects overall performance weighted by label frequency. The model has learned something meaningful from the embeddings — a random baseline on 370 classes would score near zero — but performance is limited, which is expected for a simple linear model on a highly imbalanced 370-class problem with only 2,448 training examples.
 
-```bash
-scin_data_modeling pipeline --no-images --create-embeddings --embedding-backbone resnet50
-```
+**Macro F1 (0.0163)** is low because it treats all 370 conditions equally, including extremely rare ones the model effectively never predicts. This gap between micro (0.19) and macro (0.02) F1 reveals severe class imbalance: a handful of common conditions drive most correct predictions while rare conditions are missed almost entirely.
 
-Embeddings are generated by streaming images directly from the SCIN GCS bucket; local image files are not required.
+**Precision > Recall (0.30 vs 0.14)**: The model is conservative — when it does predict a label it is more often right than wrong, but it misses many true labels. This is typical for logistic regression with class imbalance: the classifier learns a high threshold before committing to a positive prediction.
 
-### Output
-
-- Primary artifact: `data/processed/cleaned.csv`
-- Optional artifacts: `data/processed/train.csv`, `data/processed/test.csv`
-- Optional embedding artifacts: `data/processed/embeddings_train.npz`, `data/processed/embeddings_test.npz`
+These results represent an expected baseline for a linear model on a difficult 370-class multi-label problem. They establish a performance floor for comparing against more powerful models (neural classification heads, fine-tuned backbones).
 
 ## Notes on Labels
 

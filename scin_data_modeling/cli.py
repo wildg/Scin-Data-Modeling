@@ -140,14 +140,16 @@ def _train(mode: str, processed_dir: Path, model_dir: Path, backbone_name: str, 
                 f"[red]Embeddings not found at {train_emb}.[/red]\n  Run [bold]scin_data_modeling embed[/bold] first."
             )
             raise typer.Exit(code=1)
-        console.print(f"  Mode: [cyan]frozen[/cyan] — training head on cached embeddings")
+        console.print("  Mode: [cyan]frozen[/cyan] — training head on cached embeddings")
         console.print(f"  Embeddings: {train_emb}")
-        console.print(
-            "[yellow]Head training not yet implemented. "
-            "Add training loop to [bold]scin_data_modeling/models/[/bold][/yellow]"
-        )
+
+        from scin_data_modeling.models.baseline import train_baseline
+
+        console.print("Training logistic regression baseline…")
+        artifact_path = train_baseline(processed_dir=processed_dir, model_dir=model_dir)
+        console.print(f"[green]✓ Model saved to {artifact_path}[/green]")
     elif mode == "finetune":
-        console.print(f"  Mode: [cyan]finetune[/cyan] — end-to-end with GCS streaming")
+        console.print("  Mode: [cyan]finetune[/cyan] — end-to-end with GCS streaming")
         console.print(f"  Backbone: [cyan]{backbone_name}[/cyan]  Device: [cyan]{device_str}[/cyan]")
         console.print(
             "[yellow]Fine-tune training not yet implemented. "
@@ -160,10 +162,28 @@ def _train(mode: str, processed_dir: Path, model_dir: Path, backbone_name: str, 
 
 def _evaluate(processed_dir: Path, model_dir: Path) -> None:
     console.print(Rule("[bold blue]Step 5 — Evaluate[/bold blue]"))
-    console.print(
-        "[yellow]Evaluation not yet implemented. "
-        "Add metric code to [bold]scin_data_modeling/evaluation/[/bold][/yellow]"
-    )
+
+    model_path = Path(model_dir) / "baseline_logreg.joblib"
+    if not model_path.exists():
+        console.print(
+            f"[red]Model not found at {model_path}.[/red]\n"
+            "  Run [bold]scin_data_modeling train --mode frozen[/bold] first."
+        )
+        raise typer.Exit(code=1)
+
+    test_emb = processed_dir / "embeddings_test.npz"
+    if not test_emb.exists():
+        console.print(
+            f"[red]Test embeddings not found at {test_emb}.[/red]\n  Run [bold]scin_data_modeling embed[/bold] first."
+        )
+        raise typer.Exit(code=1)
+
+    from scin_data_modeling.evaluation.metrics import evaluate_baseline, print_metrics
+
+    console.print("Evaluating on test set…")
+    metrics = evaluate_baseline(processed_dir=processed_dir, model_path=model_path)
+    print_metrics(metrics, console=console)
+    console.print("[green]✓ Evaluation complete.[/green]")
 
 
 # ── subcommands ────────────────────────────────────────────────────────────────
