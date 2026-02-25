@@ -2,6 +2,11 @@
 
 **INSY 674 Group Project**
 
+## Semi-Supervised Guide
+
+For the complete semi-supervised learning workflow (preprocessing, modeling, tuning, outputs), see:
+- `README_SEMI_SUPERVISED.md`
+
 ## Project Overview
 
 This project develops a machine learning model to predict dermatological skin conditions based on clinical data from the SCIN (Skin Condition Image Network) dataset. The model aims to predict what diagnosis a dermatologist might assign to a case based on patient demographics, symptoms, physical characteristics, and clinical observations.
