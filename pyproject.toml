@@ -21,6 +21,15 @@ license = {text = "MIT"}
 dependencies = [
   "typer",
   "rich",
+  "tqdm>=4.67.3",
+  "google-cloud-storage>=3.9.0",
+  "torch>=2.10.0",
+  "torchvision>=0.25.0",
+  "pillow>=12.1.1",
+  "pandas>=3.0.1",
+  "numpy>=2.4.2",
+  "scikit-learn>=1.8.0",
+  "xgboost>=2.0.0",
 ]
 requires-python = ">= 3.12"
 
@@ -43,6 +52,10 @@ typecheck = [
 docs = [
     "zensical",
     "mkdocstrings-python",
+]
+dashboard = [
+    "streamlit>=1.40.0",
+    "plotly>=5.0.0",
 ]
 
 [project.urls]
@@ -95,3 +108,4 @@ exclude_also = [
 [tool.uv]
 package = true
 default-groups = ["dev"]
+override-dependencies = ["pandas>=3.0.1"]
