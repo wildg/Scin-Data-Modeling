@@ -1,0 +1,17 @@
+repos:
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: stable
+    hooks:
+      - id: ruff
+        args: ["--fix", "--line-length=120"]
+
+  - repo: local
+    hooks:
+      - id: ty-check
+        name: ty check
+        entry: ty
+        language: python
+        additional_dependencies: ["ty"]
+        pass_filenames: false
+        args: ["check", "."]
+        stages: [push]

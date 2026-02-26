@@ -4,6 +4,42 @@
 list:
     @just --list
 
+# ── Data pipeline ──────────────────────────────────────────────────────────────
+
+# Download the SCIN dataset CSVs and images from GCS into data/raw/
+download *ARGS:
+    uv run scin_data_modeling download {{ARGS}}
+
+# Download only the metadata CSVs (skip the large image files)
+download-csvs:
+    uv run scin_data_modeling download --no-images
+
+# Preprocess raw data: build labels, collect image paths, save train/test splits
+preprocess *ARGS:
+    uv run scin_data_modeling preprocess {{ARGS}}
+
+# Stream images from GCS and extract embeddings via a frozen backbone
+embed *ARGS:
+    uv run scin_data_modeling embed {{ARGS}}
+
+# Train a model (--mode frozen for cached embeddings, --mode finetune for GCS streaming)
+train *ARGS:
+    uv run scin_data_modeling train {{ARGS}}
+
+# Evaluate the trained model (not yet implemented)
+evaluate *ARGS:
+    uv run scin_data_modeling evaluate {{ARGS}}
+
+# Run the full pipeline end-to-end: download → preprocess → embed → train → evaluate
+pipeline *ARGS:
+    uv run scin_data_modeling pipeline {{ARGS}}
+
+# Run the pipeline but skip the download step (data already present)
+pipeline-no-download *ARGS:
+    uv run scin_data_modeling pipeline --skip-download {{ARGS}}
+
+# ── Development ────────────────────────────────────────────────────────────────
+
 # Type check the project with ty
 type-check:
     uv run --python=3.13 ty check .
