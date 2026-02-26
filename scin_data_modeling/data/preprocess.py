@@ -182,14 +182,18 @@ def create_train_test_split(
     test_size: float = 0.2,
     random_state: int = 42,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Random train/test split.
+    """Case-level train/test split to prevent data leakage.
+
+    All rows sharing the same ``case_id`` are assigned to the same split,
+    ensuring that multiple images from the same skin case never appear in
+    both train and test sets.
 
     Parameters
     ----------
     processed_df:
-        Output of :func:`build_processed_df`.
+        Output of :func:`build_clean_df`.
     test_size:
-        Fraction of data to reserve for the test set (default 0.2).
+        Fraction of *cases* to reserve for the test set (default 0.2).
     random_state:
         Seed for reproducibility.
 
@@ -199,11 +203,16 @@ def create_train_test_split(
     """
     from sklearn.model_selection import train_test_split
 
-    train_df, test_df = train_test_split(
-        processed_df,
+    unique_cases = processed_df["case_id"].unique()
+    train_cases, test_cases = train_test_split(
+        unique_cases,
         test_size=test_size,
         random_state=random_state,
     )
+
+    train_df = processed_df[processed_df["case_id"].isin(train_cases)]
+    test_df = processed_df[processed_df["case_id"].isin(test_cases)]
+
     return train_df.reset_index(drop=True), test_df.reset_index(drop=True)
 
 
