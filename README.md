@@ -60,14 +60,15 @@ The SCIN dataset contains dermatological cases with comprehensive clinical infor
   - `label_all` (deduplicated full condition list)
   - `label` (first 3 labels, JSON list)
 - Save cleaned output to `data/processed/cleaned.csv`
-- Optional: create `train.csv` / `test.csv` split (80/20, seed 42)
-- Result: 3,061 cleaned cases → 2,448 train / 613 test
+- Optional: create `train.csv` / `test.csv` / `validate.csv` split (configurable via `--test-size` and `--validate-size`, seed 42)
+- Default split (no validation): 3,061 cleaned cases → 2,448 train / 613 test
+- Example 70/20/10 split: → ~2,143 train / 613 test / 306 validate
 
 ### 3) Embed
 - Stream images directly from GCS (no local download needed)
 - Pass each image through a frozen ResNet50 backbone (ImageNet pretrained)
 - Mean-pool embeddings across 1–3 images per case
-- Save as `.npz` files: `embeddings_train.npz` (2448 × 2048), `embeddings_test.npz` (613 × 2048)
+- Save as `.npz` files per split: `embeddings_train.npz`, `embeddings_test.npz`, and optionally `embeddings_validate.npz`
 
 ### 4) Train
 Two models are available, both using the same multi-label approach:
@@ -104,8 +105,10 @@ Scin-Data-Modeling/
 │       ├── cleaned.csv
 │       ├── train.csv
 │       ├── test.csv
+│       ├── validate.csv              # only created when --validate-size > 0
 │       ├── embeddings_train.npz
-│       └── embeddings_test.npz
+│       ├── embeddings_test.npz
+│       └── embeddings_validate.npz  # only created when validate split exists
 ├── models/
 │   ├── baseline_logreg.joblib   # saved after training logreg
 │   ├── xgboost_model.joblib     # saved after training xgboost
@@ -153,7 +156,7 @@ uv sync --group dashboard
 # 1. Download CSVs
 uv run scin_data_modeling download --no-images
 
-# 2. Preprocess and create train/test split
+# 2. Preprocess and create train/test split (default: 80/20, no validation set)
 uv run scin_data_modeling preprocess --create-split --test-size 0.2 --seed 42
 
 # 3. Generate image embeddings (streams from GCS, no local images needed)
@@ -165,6 +168,23 @@ uv run scin_data_modeling train --mode frozen
 # 5. Evaluate on the test set
 uv run scin_data_modeling evaluate
 ```
+
+### Using a validation split
+
+Pass `--validate-size` to reserve a fraction of the data for validation. This produces a third CSV (`validate.csv`) and can optionally produce `embeddings_validate.npz`.
+
+```bash
+# 70/20/10 train/test/validate split
+uv run scin_data_modeling preprocess --create-split --test-size 0.2 --validate-size 0.1
+
+# Embed all three splits at once
+uv run scin_data_modeling embed --split all
+
+# Or embed just the validation split (e.g. after already embedding train/test)
+uv run scin_data_modeling embed --split validate
+```
+
+The `--split` flag accepts: `train`, `test`, `validate`, `both` (train + test, default), or `all` (train + test + validate).
 
 ### Run a specific model (if data and embeddings already exist)
 
@@ -178,6 +198,10 @@ uv run scin_data_modeling evaluate --model logreg
 # XGBoost
 uv run scin_data_modeling train --mode frozen --model xgboost
 uv run scin_data_modeling evaluate --model xgboost
+
+# Neural Network Model
+uv run scin_data_modeling train --mode frozen --model ffnn
+uv run scin_data_modeling evaluate --model ffnn
 ```
 
 ### Options
@@ -196,10 +220,12 @@ uv run scin_data_modeling evaluate --model xgboost --processed-dir data/processe
 | File | Description |
 |------|-------------|
 | `data/processed/cleaned.csv` | All 3,061 cleaned cases |
-| `data/processed/train.csv` | 2,448 training cases |
-| `data/processed/test.csv` | 613 test cases |
-| `data/processed/embeddings_train.npz` | ResNet50 features (2448 × 2048) |
-| `data/processed/embeddings_test.npz` | ResNet50 features (613 × 2048) |
+| `data/processed/train.csv` | Training cases (size determined by `--test-size` and `--validate-size`) |
+| `data/processed/test.csv` | Test cases (fraction set by `--test-size`, default 0.2) |
+| `data/processed/validate.csv` | Validation cases (fraction set by `--validate-size`; not created when 0.0) |
+| `data/processed/embeddings_train.npz` | ResNet50 features for training cases (N × 2048) |
+| `data/processed/embeddings_test.npz` | ResNet50 features for test cases (N × 2048) |
+| `data/processed/embeddings_validate.npz` | ResNet50 features for validation cases (N × 2048; only when validate split exists) |
 | `models/baseline_logreg.joblib` | Logistic regression classifier + label binarizer |
 | `models/xgboost_model.joblib` | XGBoost classifier + label binarizer |
 | `models/ffnn_mlp.joblib` | Feedforward neural network (sklearn MLP) classifier + label binarizer |

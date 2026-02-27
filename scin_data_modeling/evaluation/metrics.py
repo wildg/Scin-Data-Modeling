@@ -49,6 +49,7 @@ def evaluate_baseline(
         "recall_macro": float(recall_score(Y_test, Y_pred, average="macro", zero_division=0)),
         "num_classes": len(mlb.classes_),
         "num_test_samples": X_test.shape[0],
+        "model_name": model_path.stem,
     }
 
     report = classification_report(
@@ -66,6 +67,7 @@ def evaluate_baseline(
 def print_metrics(metrics: dict[str, Any], console: Any) -> None:
     """Pretty-print evaluation metrics using a Rich console."""
     from rich.table import Table
+    from datetime import datetime
 
     console.print(
         f"\n[bold]Test set:[/bold] {metrics['num_test_samples']} samples, {metrics['num_classes']} label classes\n"
@@ -85,3 +87,17 @@ def print_metrics(metrics: dict[str, Any], console: Any) -> None:
     table.add_row("Recall (macro)", f"{metrics['recall_macro']:.4f}")
 
     console.print(table)
+
+    # Save metrics JSON to results/ using model name (no timestamp)
+    try:
+        model_name = metrics.get("model_name") or "metrics"
+        # sanitize model_name to a filesystem-safe string
+        model_name = str(model_name).replace(" ", "_")
+        results_dir = Path("results")
+        results_dir.mkdir(parents=True, exist_ok=True)
+        out_path = results_dir / f"metrics_{model_name}.json"
+        with out_path.open("w", encoding="utf-8") as fh:
+            json.dump(metrics, fh, indent=2, ensure_ascii=False)
+        console.print(f"[green]Saved metrics to[/green] {out_path}")
+    except Exception as e:  # pragma: no cover - best-effort save
+        console.print(f"[red]Failed to save metrics:[/red] {e}")
