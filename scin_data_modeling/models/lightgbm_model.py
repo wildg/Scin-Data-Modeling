@@ -15,6 +15,8 @@ def train_lightgbm(
     n_estimators: int = 300,
     max_depth: int = 4,
     learning_rate: float = 0.1,
+    scale_pos_weight: float = 1.0,
+    min_child_weight: float = 1e-3,
 ) -> Path:
     """Train a OneVsRestClassifier(LGBMClassifier) on cached embeddings.
 
@@ -43,6 +45,8 @@ def train_lightgbm(
             n_estimators=n_estimators,
             max_depth=max_depth,
             learning_rate=learning_rate,
+            scale_pos_weight=scale_pos_weight,
+            min_child_weight=min_child_weight,
             n_jobs=-1,
             verbose=-1,
         ),

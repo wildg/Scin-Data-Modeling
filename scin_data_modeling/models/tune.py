@@ -1,9 +1,9 @@
 """Hyperparameter tuning for multi-label skin condition classifiers.
 
-Provides tuning functions for Logistic Regression, XGBoost, and FFNN models.
-Uses the validation split for evaluation (no cross-validation) and optimises
-for macro F1 to ensure equal class weighting.  Includes top-K class filtering
-and per-class threshold optimisation.
+Provides tuning functions for Logistic Regression, XGBoost, LightGBM, and FFNN
+models.  Uses the validation split for evaluation (no cross-validation) and
+optimises for macro F1 to ensure equal class weighting.  Includes top-K class
+filtering and per-class threshold optimisation.
 """
 
 from __future__ import annotations
@@ -354,6 +354,139 @@ def tune_xgboost(
     model_dir = Path(model_dir)
     model_dir.mkdir(parents=True, exist_ok=True)
     artifact_path = model_dir / "xgboost_model.joblib"
+    joblib.dump(
+        {
+            "classifier": best_clf,
+            "binarizer": mlb,
+            "top_k_indices": top_k_idx,
+            "top_k_names": top_k_names,
+            "thresholds": best_thresholds,
+            "best_params": best_params,
+        },
+        artifact_path,
+    )
+    console.print(f"[green]Saved to {artifact_path}[/green]\n")
+    return artifact_path
+
+
+# ── LightGBM tuning ───────────────────────────────────────────────────────────
+
+
+def tune_lightgbm(
+    processed_dir: Path,
+    model_dir: Path,
+    top_k: int = 30,
+    n_iter: int = 15,
+    seed: int = 42,
+) -> Path:
+    """Randomised search over LightGBM hyperparameters.
+
+    Returns the path to the saved best-model artifact.
+    """
+    import joblib
+    from typing import cast
+    from rich.console import Console
+    from sklearn.base import BaseEstimator
+    from sklearn.multiclass import OneVsRestClassifier
+    from sklearn.preprocessing import MultiLabelBinarizer
+    from lightgbm import LGBMClassifier
+
+    console = Console()
+    console.print("\n[bold]Tuning LightGBM[/bold]")
+
+    X_train, y_train = _load_split(processed_dir, "train")
+    X_val, y_val = _load_split(processed_dir, "validate")
+
+    mlb = MultiLabelBinarizer()
+    Y_train_full = mlb.fit_transform(y_train)
+    Y_val_full = mlb.transform(y_val)
+
+    Y_train, top_k_names, top_k_idx = filter_top_k_classes(Y_train_full, mlb, k=top_k)
+    Y_val = _apply_top_k_filter(Y_val_full, top_k_idx)
+
+    console.print(f"  Classes: {len(top_k_names)} (top-{top_k} from {len(mlb.classes_)})")
+    console.print(f"  Train: {X_train.shape[0]}, Val: {X_val.shape[0]}")
+
+    # Full parameter grid (sample n_iter random combos)
+    param_space = {
+        "n_estimators": [100, 200, 300],
+        "max_depth": [3, 4, 6],
+        "learning_rate": [0.05, 0.1, 0.2],
+        "scale_pos_weight": [1, 5, 10],
+        "min_child_weight": [1e-3, 1, 5],
+    }
+
+    rng = np.random.RandomState(seed)
+    all_combos = list(itertools.product(*param_space.values()))
+    sample_indices = rng.choice(len(all_combos), size=min(n_iter, len(all_combos)), replace=False)
+    sampled_combos = [all_combos[i] for i in sample_indices]
+
+    results: list[dict[str, Any]] = []
+    best_f1 = -1.0
+    best_params: dict[str, Any] = {}
+
+    for combo in sampled_combos:
+        params = dict(zip(param_space.keys(), combo))
+        t0 = time.time()
+
+        clf = OneVsRestClassifier(
+            cast(
+                BaseEstimator,
+                LGBMClassifier(
+                    n_estimators=params["n_estimators"],
+                    max_depth=params["max_depth"],
+                    learning_rate=params["learning_rate"],
+                    scale_pos_weight=params["scale_pos_weight"],
+                    min_child_weight=params["min_child_weight"],
+                    n_jobs=-1,
+                    verbose=-1,
+                ),
+            ),
+            n_jobs=-1,
+        )
+        clf.fit(X_train, Y_train)
+        Y_pred = clf.predict(X_val)
+        f1 = _macro_f1(Y_val, Y_pred)
+        elapsed = time.time() - t0
+
+        results.append({"params": params, "macro_f1": f1, "time": elapsed})
+        params_str = ", ".join(f"{k}={v}" for k, v in params.items())
+        console.print(f"  {params_str} → macro F1={f1:.4f}  ({elapsed:.1f}s)")
+
+        if f1 > best_f1:
+            best_f1 = f1
+            best_params = params
+
+    _print_results_table(results, console, "LightGBM Tuning Results")
+    console.print(f"\n[bold green]Best:[/bold green] {best_params}  macro F1={best_f1:.4f}")
+
+    # Retrain best and optimise thresholds
+    best_clf = OneVsRestClassifier(
+        cast(
+            BaseEstimator,
+            LGBMClassifier(
+                n_estimators=best_params["n_estimators"],
+                max_depth=best_params["max_depth"],
+                learning_rate=best_params["learning_rate"],
+                scale_pos_weight=best_params["scale_pos_weight"],
+                min_child_weight=best_params["min_child_weight"],
+                n_jobs=-1,
+                verbose=-1,
+            ),
+        ),
+        n_jobs=-1,
+    )
+    best_clf.fit(X_train, Y_train)
+    Y_val_proba = best_clf.predict_proba(X_val)
+    best_thresholds = optimize_thresholds(Y_val, Y_val_proba)
+
+    Y_val_pred_tuned = (Y_val_proba >= best_thresholds).astype(int)
+    tuned_f1 = _macro_f1(Y_val, Y_val_pred_tuned)
+    console.print(f"  After threshold tuning: macro F1={tuned_f1:.4f}")
+
+    model_dir = Path(model_dir)
+    model_dir.mkdir(parents=True, exist_ok=True)
+    artifact_path = model_dir / "lightgbm_model.joblib"
     joblib.dump(
         {
             "classifier": best_clf,

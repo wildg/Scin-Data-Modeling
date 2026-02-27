@@ -217,12 +217,16 @@ def _tune(processed_dir: Path, model_dir: Path, model_name: str, top_k: int, n_i
         from scin_data_modeling.models.tune import tune_xgboost
 
         artifact_path = tune_xgboost(processed_dir=processed_dir, model_dir=model_dir, top_k=top_k, n_iter=n_iter)
+    elif model_name == "lightgbm":
+        from scin_data_modeling.models.tune import tune_lightgbm
+
+        artifact_path = tune_lightgbm(processed_dir=processed_dir, model_dir=model_dir, top_k=top_k, n_iter=n_iter)
     elif model_name == "ffnn":
         from scin_data_modeling.models.tune import tune_ffnn
 
         artifact_path = tune_ffnn(processed_dir=processed_dir, model_dir=model_dir, top_k=top_k, n_iter=n_iter)
     else:
-        console.print(f"[red]Unknown model: {model_name!r}. Use 'logreg', 'xgboost', or 'ffnn'.[/red]")
+        console.print(f"[red]Unknown model: {model_name!r}. Use 'logreg', 'xgboost', 'lightgbm', or 'ffnn'.[/red]")
         raise typer.Exit(code=1)
 
     console.print(f"[green]✓ Best model saved to {artifact_path}[/green]")
@@ -357,7 +361,7 @@ def train(
 
 @app.command()
 def tune(
-    model: str = typer.Option("logreg", help="Model to tune: 'logreg', 'xgboost', or 'ffnn'."),
+    model: str = typer.Option("logreg", help="Model to tune: 'logreg', 'xgboost', 'lightgbm', or 'ffnn'."),
     processed_dir: Path = typer.Option(Path("data/processed"), help="Directory containing processed splits."),
     model_dir: Path = typer.Option(Path("models"), help="Directory to save tuned model artefacts."),
     top_k: int = typer.Option(30, help="Number of most frequent classes to keep."),

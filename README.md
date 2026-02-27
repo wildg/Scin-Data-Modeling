@@ -80,7 +80,7 @@ Three models are available, all using the same multi-label approach:
 
 **XGBoost** (`--model xgboost`): `XGBClassifier(n_estimators=300, max_depth=4, learning_rate=0.1, tree_method="hist")` — gradient-boosted trees with configurable `scale_pos_weight` and `min_child_weight` for class imbalance handling. Saved to `models/xgboost_model.joblib`.
 
-**LightGBM** (`--model lightgbm`): `LGBMClassifier(n_estimators=300, max_depth=4, learning_rate=0.1)` - gradient-boosted trees with efficient histogram-based training. Saved to `models/lightgbm_model.joblib`.
+**LightGBM** (`--model lightgbm`): `LGBMClassifier(n_estimators=300, max_depth=4, learning_rate=0.1)` — gradient-boosted trees with efficient histogram-based training and configurable `scale_pos_weight` and `min_child_weight` for class imbalance handling. Saved to `models/lightgbm_model.joblib`.
 
 **Feedforward Neural Network (FFNN)** (`--model ffnn`): `sklearn.neural_network.MLPClassifier` — a small fully-connected classification head trained on embeddings. Typical configuration used in experiments:
 - **Architecture:** hidden layers `(768, 256)`
@@ -97,6 +97,8 @@ Three models are available, all using the same multi-label approach:
 **Logistic Regression:** Grid search over `C` ∈ {0.001, 0.01, 0.1, 1.0, 10.0, 100.0} and `class_weight` ∈ {balanced, None} (12 configurations).
 
 **XGBoost:** Randomised search (default 15 iterations) over `n_estimators`, `max_depth`, `learning_rate`, `scale_pos_weight`, and `min_child_weight`.
+
+**LightGBM:** Randomised search (default 15 iterations) over `n_estimators`, `max_depth`, `learning_rate`, `scale_pos_weight`, and `min_child_weight`.
 
 **FFNN:** Randomised search (default 12 iterations) over `hidden_layer_sizes`, `alpha`, `learning_rate_init`, and `batch_size`.
 
@@ -128,6 +130,7 @@ Scin-Data-Modeling/
 ├── models/
 │   ├── baseline_logreg.joblib   # saved after training logreg
 │   ├── xgboost_model.joblib     # saved after training xgboost
+│   ├── lightgbm_model.joblib    # saved after training lightgbm
 │   └── ffnn_mlp.joblib          # saved after training ffnn (sklearn MLP)
 └── scin_data_modeling/
     ├── cli.py
@@ -140,6 +143,7 @@ Scin-Data-Modeling/
     │   ├── backbone.py          # ResNet50 / EfficientNet-B0
     │   ├── baseline.py          # logistic regression baseline
     │   ├── xgboost_model.py     # XGBoost model
+    │   ├── lightgbm_model.py    # LightGBM model
     │   ├── ffnn_model.py        # feedforward neural network (MLP) model
     │   └── tune.py              # hyperparameter tuning (all models)
     └── evaluation/
@@ -182,11 +186,13 @@ uv run scin_data_modeling embed --backbone resnet50 --device cpu --split all
 # 4. Tune models using the validation set (recommended)
 uv run scin_data_modeling tune --model logreg
 uv run scin_data_modeling tune --model xgboost
+uv run scin_data_modeling tune --model lightgbm
 uv run scin_data_modeling tune --model ffnn
 
 # 5. Evaluate on the test set
 uv run scin_data_modeling evaluate --model logreg
 uv run scin_data_modeling evaluate --model xgboost
+uv run scin_data_modeling evaluate --model lightgbm
 uv run scin_data_modeling evaluate --model ffnn
 ```
 
@@ -243,11 +249,13 @@ uv run scin_data_modeling embed --split all
 # 2. Tune each model (uses validation set, saves best model)
 uv run scin_data_modeling tune --model logreg
 uv run scin_data_modeling tune --model xgboost
+uv run scin_data_modeling tune --model lightgbm
 uv run scin_data_modeling tune --model ffnn
 
 # 3. Evaluate tuned models on the test set
 uv run scin_data_modeling evaluate --model logreg
 uv run scin_data_modeling evaluate --model xgboost
+uv run scin_data_modeling evaluate --model lightgbm
 uv run scin_data_modeling evaluate --model ffnn
 ```
 
@@ -345,15 +353,22 @@ This table compares the logistic regression baseline, the XGBoost baseline, and 
 
 ## LightGBM Model Results
 
-Evaluate LightGBM with:
+Train and evaluate LightGBM with default parameters, or tune using the validation set:
 
 ```bash
+# Default training (no tuning)
 uv run scin_data_modeling train --mode frozen --model lightgbm
+uv run scin_data_modeling evaluate --model lightgbm
+
+# Tuned training (recommended)
+uv run scin_data_modeling tune --model lightgbm
 uv run scin_data_modeling evaluate --model lightgbm
 ```
 
 LightGBM uses the same multi-label setup:
 `OneVsRestClassifier(LGBMClassifier(n_estimators=300, max_depth=4, learning_rate=0.1))`.
+
+**Default results (no tuning, 370 classes):**
 
 | Metric | Value |
 |--------|------:|
@@ -372,7 +387,7 @@ LightGBM uses the same multi-label setup:
 
 **Compared with XGBoost, LightGBM keeps a much better precision-recall balance.** XGBoost reached higher precision (0.5180) but collapsed recall (0.0528), while LightGBM stays close to the baseline trade-off and therefore much higher micro F1.
 
-**Takeaway:** With the current settings (`n_estimators=300`, `max_depth=4`, `learning_rate=0.1`), LightGBM does not materially improve over logistic regression on this dataset, but it avoids the severe recall drop observed with XGBoost. Next steps are class weighting, threshold tuning, and per-label calibration.
+**Takeaway:** With default settings (`n_estimators=300`, `max_depth=4`, `learning_rate=0.1`), LightGBM does not materially improve over logistic regression on this dataset, but it avoids the severe recall drop observed with XGBoost. Use `scin_data_modeling tune --model lightgbm` to search for better hyperparameters with top-K class filtering, `scale_pos_weight` for class imbalance, and per-class threshold optimisation.
 
 ## Notes on Labels
 
