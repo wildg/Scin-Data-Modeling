@@ -13,6 +13,7 @@ def train_baseline(
     model_dir: Path,
     max_iter: int = 1000,
     C: float = 1.0,
+    class_weight: str | None = "balanced",
 ) -> Path:
     """Train a OneVsRestClassifier(LogisticRegression) on cached embeddings.
 
@@ -34,7 +35,7 @@ def train_baseline(
     Y_train = mlb.fit_transform(y_labels_train)
 
     clf = OneVsRestClassifier(
-        LogisticRegression(max_iter=max_iter, C=C, solver="lbfgs"),
+        LogisticRegression(max_iter=max_iter, C=C, solver="lbfgs", class_weight=class_weight),
         n_jobs=-1,
     )
     clf.fit(X_train, Y_train)

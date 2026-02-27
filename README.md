@@ -71,23 +71,37 @@ The SCIN dataset contains dermatological cases with comprehensive clinical infor
 - Save as `.npz` files per split: `embeddings_train.npz`, `embeddings_test.npz`, and optionally `embeddings_validate.npz`
 
 ### 4) Train
-Two models are available, both using the same multi-label approach:
-- Binarize the multi-label targets: fit a `MultiLabelBinarizer` on training labels across all 370 unique skin conditions, producing a binary matrix of shape (2448 × 370)
-- Train a `OneVsRestClassifier` (one binary classifier per condition, parallelized via `n_jobs=-1`)
+Three models are available, all using the same multi-label approach:
+- Binarize the multi-label targets: fit a `MultiLabelBinarizer` on training labels across all unique skin conditions, producing a binary matrix
+- Train a classifier (with `OneVsRestClassifier` for LogReg and XGBoost, or natively multi-output for FFNN)
 - Save the classifier and binarizer together as a single `.joblib` artifact
 
-**Logistic Regression** (`--model logreg`): `LogisticRegression(solver="lbfgs")` — fast linear baseline. Saved to `models/baseline_logreg.joblib`.
+**Logistic Regression** (`--model logreg`): `LogisticRegression(solver="lbfgs", class_weight="balanced")` — fast linear baseline with automatic inverse-frequency class weighting. Saved to `models/baseline_logreg.joblib`.
 
-**XGBoost** (`--model xgboost`): `XGBClassifier(n_estimators=300, max_depth=4, learning_rate=0.1, tree_method="hist")` — gradient-boosted trees that can learn non-linear interactions in the embedding space. Saved to `models/xgboost_model.joblib`.
+**XGBoost** (`--model xgboost`): `XGBClassifier(n_estimators=300, max_depth=4, learning_rate=0.1, tree_method="hist")` — gradient-boosted trees with configurable `scale_pos_weight` and `min_child_weight` for class imbalance handling. Saved to `models/xgboost_model.joblib`.
 
 **Feedforward Neural Network (FFNN)** (`--model ffnn`): `sklearn.neural_network.MLPClassifier` — a small fully-connected classification head trained on embeddings. Typical configuration used in experiments:
 - **Architecture:** hidden layers `(768, 256)`
 - **Training:** `adam`, `learning_rate_init=5e-4`, `batch_size=64`, `max_iter=300`, `early_stopping=True`, `n_iter_no_change=20`, `random_state=42`
 - **Artifact:** `models/ffnn_mlp.joblib` (sklearn MLP classifier + label binarizer)
 
-### 5) Evaluate
+### 5) Tune (Hyperparameter Tuning)
+- Requires a **validation split** (`embeddings_validate.npz`)
+- Filters to the **top-K most frequent classes** (default 30) to focus on actionable conditions and improve macro metrics
+- Searches hyperparameter combinations, evaluating **macro F1** on the validation set
+- Applies **per-class threshold optimisation** after finding the best hyperparameters — sweeps thresholds per class to maximise each class's F1, ensuring balanced predictions across rare and common conditions
+- Saves the best model artifact with tuned thresholds, top-K class list, and best parameters
+
+**Logistic Regression:** Grid search over `C` ∈ {0.001, 0.01, 0.1, 1.0, 10.0, 100.0} and `class_weight` ∈ {balanced, None} (12 configurations).
+
+**XGBoost:** Randomised search (default 15 iterations) over `n_estimators`, `max_depth`, `learning_rate`, `scale_pos_weight`, and `min_child_weight`.
+
+**FFNN:** Randomised search (default 12 iterations) over `hidden_layer_sizes`, `alpha`, `learning_rate_init`, and `batch_size`.
+
+### 6) Evaluate
 - Load test embeddings and the saved model artifact
 - Binarize test labels using the **training** binarizer (no label leakage)
+- Automatically detects tuned models (top-K filtering + per-class thresholds) vs legacy models
 - Compute multi-label metrics and print a results table
 
 ## Repository Structure
@@ -124,7 +138,8 @@ Scin-Data-Modeling/
     │   ├── backbone.py          # ResNet50 / EfficientNet-B0
     │   ├── baseline.py          # logistic regression baseline
     │   ├── xgboost_model.py     # XGBoost model
-    │   └── ffnn_model.py        # feedforward neural network (MLP) model
+    │   ├── ffnn_model.py        # feedforward neural network (MLP) model
+    │   └── tune.py              # hyperparameter tuning (all models)
     └── evaluation/
         └── metrics.py           # multi-label evaluation metrics
 ```
@@ -156,18 +171,24 @@ uv sync --group dashboard
 # 1. Download CSVs
 uv run scin_data_modeling download --no-images
 
-# 2. Preprocess and create train/test split (default: 80/20, no validation set)
-uv run scin_data_modeling preprocess --create-split --test-size 0.2 --seed 42
+# 2. Preprocess and create train/test/validate split (70/20/10)
+uv run scin_data_modeling preprocess --create-split --test-size 0.2 --validate-size 0.1 --seed 42
 
-# 3. Generate image embeddings (streams from GCS, no local images needed)
-uv run scin_data_modeling embed --backbone resnet50 --device cpu
+# 3. Generate image embeddings for all splits (streams from GCS, no local images needed)
+uv run scin_data_modeling embed --backbone resnet50 --device cpu --split all
 
-# 4. Train the logistic regression baseline
-uv run scin_data_modeling train --mode frozen
+# 4. Tune models using the validation set (recommended)
+uv run scin_data_modeling tune --model logreg
+uv run scin_data_modeling tune --model xgboost
+uv run scin_data_modeling tune --model ffnn
 
 # 5. Evaluate on the test set
-uv run scin_data_modeling evaluate
+uv run scin_data_modeling evaluate --model logreg
+uv run scin_data_modeling evaluate --model xgboost
+uv run scin_data_modeling evaluate --model ffnn
 ```
+
+> **Note:** You can also train models without tuning using `uv run scin_data_modeling train --mode frozen --model logreg`. Tuning is recommended as it searches for optimal hyperparameters, applies top-K class filtering, and optimises per-class decision thresholds.
 
 ### Using a validation split
 
@@ -188,7 +209,7 @@ The `--split` flag accepts: `train`, `test`, `validate`, `both` (train + test, d
 
 ### Run a specific model (if data and embeddings already exist)
 
-Both models use the same `--mode frozen` flag (train on cached embeddings) and the same `--model` flag to select which model to train or evaluate.
+All models use the same `--mode frozen` flag (train on cached embeddings) and the same `--model` flag to select which model to train or evaluate.
 
 ```bash
 # Logistic regression (default)
@@ -202,6 +223,39 @@ uv run scin_data_modeling evaluate --model xgboost
 # Neural Network Model
 uv run scin_data_modeling train --mode frozen --model ffnn
 uv run scin_data_modeling evaluate --model ffnn
+```
+
+### Hyperparameter tuning with validation set
+
+Tuning requires a validation split with embeddings. It searches hyperparameter combinations, filters to the top-K most frequent classes, and applies per-class threshold optimisation — all evaluated on the validation set.
+
+```bash
+# 1. Create a 70/20/10 train/test/validate split and embed all splits
+uv run scin_data_modeling preprocess --create-split --test-size 0.2 --validate-size 0.1
+uv run scin_data_modeling embed --split all
+
+# 2. Tune each model (uses validation set, saves best model)
+uv run scin_data_modeling tune --model logreg
+uv run scin_data_modeling tune --model xgboost
+uv run scin_data_modeling tune --model ffnn
+
+# 3. Evaluate tuned models on the test set
+uv run scin_data_modeling evaluate --model logreg
+uv run scin_data_modeling evaluate --model xgboost
+uv run scin_data_modeling evaluate --model ffnn
+```
+
+**Tuning options:**
+
+```bash
+# Customise the number of top classes to predict (default: 30)
+uv run scin_data_modeling tune --model xgboost --top-k 20
+
+# Increase search iterations for XGBoost or FFNN (default: 15)
+uv run scin_data_modeling tune --model xgboost --n-iter 25
+
+# Custom directories
+uv run scin_data_modeling tune --model logreg --processed-dir data/processed --model-dir models
 ```
 
 ### Options
@@ -226,9 +280,9 @@ uv run scin_data_modeling evaluate --model xgboost --processed-dir data/processe
 | `data/processed/embeddings_train.npz` | ResNet50 features for training cases (N × 2048) |
 | `data/processed/embeddings_test.npz` | ResNet50 features for test cases (N × 2048) |
 | `data/processed/embeddings_validate.npz` | ResNet50 features for validation cases (N × 2048; only when validate split exists) |
-| `models/baseline_logreg.joblib` | Logistic regression classifier + label binarizer |
-| `models/xgboost_model.joblib` | XGBoost classifier + label binarizer |
-| `models/ffnn_mlp.joblib` | Feedforward neural network (sklearn MLP) classifier + label binarizer |
+| `models/baseline_logreg.joblib` | Logistic regression classifier + label binarizer (+ top-K indices, thresholds, and best params when tuned) |
+| `models/xgboost_model.joblib` | XGBoost classifier + label binarizer (+ top-K indices, thresholds, and best params when tuned) |
+| `models/ffnn_mlp.joblib` | FFNN (sklearn MLP) classifier + label binarizer (+ top-K indices, thresholds, and best params when tuned) |
 
 ### Streamlit Dashboard
 

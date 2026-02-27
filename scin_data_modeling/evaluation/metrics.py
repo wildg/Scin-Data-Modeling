@@ -12,11 +12,12 @@ import numpy as np
 def evaluate_baseline(
     processed_dir: Path,
     model_path: Path,
+    split: str = "test",
 ) -> dict[str, Any]:
-    """Evaluate a saved baseline model on the test set.
+    """Evaluate a saved model on a given split (default: test).
 
-    Loads test embeddings, binarizes labels using the saved (fitted) binarizer,
-    and computes multi-label classification metrics.
+    Supports both legacy models (full 370-class binarizer) and tuned models
+    that include ``top_k_indices``, ``thresholds``, and ``top_k_names``.
     """
     import joblib
     from sklearn.metrics import (
@@ -27,35 +28,64 @@ def evaluate_baseline(
         recall_score,
     )
 
-    test_npz = np.load(processed_dir / "embeddings_test.npz", allow_pickle=True)
-    X_test = test_npz["embeddings"]
-    y_labels_test = [json.loads(label) for label in test_npz["labels"]]
+    npz = np.load(processed_dir / f"embeddings_{split}.npz", allow_pickle=True)
+    X = npz["embeddings"]
+    y_labels = [json.loads(label) for label in npz["labels"]]
 
     artifact = joblib.load(model_path)
     clf = artifact["classifier"]
     mlb = artifact["binarizer"]
 
-    Y_test = mlb.transform(y_labels_test)
-    Y_pred = clf.predict(X_test)
+    Y_full = mlb.transform(y_labels)
+
+    # Determine whether this is a tuned model with top-K filtering
+    top_k_idx = artifact.get("top_k_indices")
+    thresholds = artifact.get("thresholds")
+    top_k_names = artifact.get("top_k_names")
+
+    if top_k_idx is not None:
+        # Tuned model: restrict labels to top-K classes
+        Y = Y_full[:, top_k_idx]
+        class_names = top_k_names
+    else:
+        # Legacy model: use all classes
+        Y = Y_full
+        class_names = list(mlb.classes_)
+
+    # Predict
+    if thresholds is not None:
+        # Use optimised per-class thresholds
+        Y_proba = clf.predict_proba(X)
+        if isinstance(Y_proba, list):
+            Y_proba = np.column_stack(
+                [
+                    cp[:, 1] if cp.ndim == 2 and cp.shape[1] > 1 else cp.ravel()
+                    for cp in Y_proba
+                ]
+            )
+        Y_pred = (np.asarray(Y_proba) >= thresholds).astype(int)
+    else:
+        Y_pred = clf.predict(X)
 
     metrics: dict[str, Any] = {
-        "hamming_loss": float(hamming_loss(Y_test, Y_pred)),
-        "f1_micro": float(f1_score(Y_test, Y_pred, average="micro", zero_division=0)),
-        "f1_macro": float(f1_score(Y_test, Y_pred, average="macro", zero_division=0)),
-        "f1_weighted": float(f1_score(Y_test, Y_pred, average="weighted", zero_division=0)),
-        "precision_micro": float(precision_score(Y_test, Y_pred, average="micro", zero_division=0)),
-        "recall_micro": float(recall_score(Y_test, Y_pred, average="micro", zero_division=0)),
-        "precision_macro": float(precision_score(Y_test, Y_pred, average="macro", zero_division=0)),
-        "recall_macro": float(recall_score(Y_test, Y_pred, average="macro", zero_division=0)),
-        "num_classes": len(mlb.classes_),
-        "num_test_samples": X_test.shape[0],
+        "hamming_loss": float(hamming_loss(Y, Y_pred)),
+        "f1_micro": float(f1_score(Y, Y_pred, average="micro", zero_division=0)),
+        "f1_macro": float(f1_score(Y, Y_pred, average="macro", zero_division=0)),
+        "f1_weighted": float(f1_score(Y, Y_pred, average="weighted", zero_division=0)),
+        "precision_micro": float(precision_score(Y, Y_pred, average="micro", zero_division=0)),
+        "recall_micro": float(recall_score(Y, Y_pred, average="micro", zero_division=0)),
+        "precision_macro": float(precision_score(Y, Y_pred, average="macro", zero_division=0)),
+        "recall_macro": float(recall_score(Y, Y_pred, average="macro", zero_division=0)),
+        "num_classes": len(class_names),
+        "num_test_samples": X.shape[0],
         "model_name": model_path.stem,
+        "split": split,
     }
 
     report = classification_report(
-        Y_test,
+        Y,
         Y_pred,
-        target_names=mlb.classes_,
+        target_names=class_names,
         output_dict=True,
         zero_division=0,
     )
@@ -67,10 +97,11 @@ def evaluate_baseline(
 def print_metrics(metrics: dict[str, Any], console: Any) -> None:
     """Pretty-print evaluation metrics using a Rich console."""
     from rich.table import Table
-    from datetime import datetime
 
+    split_name = metrics.get("split", "test")
     console.print(
-        f"\n[bold]Test set:[/bold] {metrics['num_test_samples']} samples, {metrics['num_classes']} label classes\n"
+        f"\n[bold]{split_name.title()} set:[/bold] {metrics['num_test_samples']} samples, "
+        f"{metrics['num_classes']} label classes\n"
     )
 
     table = Table(title="Multi-Label Classification Metrics")
