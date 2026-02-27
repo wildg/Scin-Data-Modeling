@@ -10,6 +10,7 @@ import ast
 import json
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 RAW_DATA_DIR = Path("data/raw")
@@ -177,49 +178,86 @@ def build_processed_df(
     return build_clean_df(combined_df)
 
 
-def create_train_test_split(
+def create_train_test_val_split(
     processed_df: pd.DataFrame,
     test_size: float = 0.2,
+    validate_size: float = 0.0,
     random_state: int = 42,
-) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Random train/test split.
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Case-level train/test/validation split to prevent data leakage.
+
+    All rows sharing the same ``case_id`` are assigned to the same split,
+    ensuring that multiple images from the same skin case never appear in
+    more than one split.
 
     Parameters
     ----------
     processed_df:
-        Output of :func:`build_processed_df`.
+        Output of :func:`build_clean_df`.
     test_size:
-        Fraction of data to reserve for the test set (default 0.2).
+        Fraction of *cases* to reserve for the test set (default 0.2).
+    validate_size:
+        Fraction of *cases* to reserve for the validation set (default 0.0).
+        When 0.0, the returned validation DataFrame is empty.
     random_state:
         Seed for reproducibility.
 
     Returns
     -------
-    (train_df, test_df) with reset indices.
+    (train_df, test_df, val_df) with reset indices.
     """
     from sklearn.model_selection import train_test_split
 
-    train_df, test_df = train_test_split(
-        processed_df,
+    unique_cases = processed_df["case_id"].unique()
+
+    # First split: separate test cases
+    remaining_cases, test_cases = train_test_split(
+        unique_cases,
         test_size=test_size,
         random_state=random_state,
     )
-    return train_df.reset_index(drop=True), test_df.reset_index(drop=True)
+
+    # Second split: separate validation cases from remaining
+    if validate_size > 0.0:
+        val_fraction = validate_size / (1 - test_size)
+        train_cases, val_cases = train_test_split(
+            remaining_cases,
+            test_size=val_fraction,
+            random_state=random_state,
+        )
+    else:
+        train_cases = remaining_cases
+        val_cases = np.array([], dtype=unique_cases.dtype)
+
+    train_df = processed_df[processed_df["case_id"].isin(train_cases)]
+    test_df = processed_df[processed_df["case_id"].isin(test_cases)]
+    val_df = processed_df[processed_df["case_id"].isin(val_cases)]
+
+    return (
+        train_df.reset_index(drop=True),
+        test_df.reset_index(drop=True),
+        val_df.reset_index(drop=True),
+    )
 
 
 def save_splits(
     train_df: pd.DataFrame,
     test_df: pd.DataFrame,
+    val_df: pd.DataFrame | None = None,
     out_dir: Path = PROCESSED_DATA_DIR,
 ) -> None:
-    """Save train/test DataFrames as CSVs under *out_dir*."""
+    """Save train/test/validation DataFrames as CSVs under *out_dir*."""
     out_dir.mkdir(parents=True, exist_ok=True)
     train_path = out_dir / "train.csv"
     test_path = out_dir / "test.csv"
     train_df.to_csv(train_path, index=False)
     test_df.to_csv(test_path, index=False)
-    print(f"Saved {len(train_df):,} training records  → {train_path}")
-    print(f"Saved {len(test_df):,} test records       → {test_path}")
+    print(f"Saved {len(train_df):,} training records    → {train_path}")
+    print(f"Saved {len(test_df):,} test records         → {test_path}")
+    if val_df is not None and len(val_df) > 0:
+        val_path = out_dir / "validate.csv"
+        val_df.to_csv(val_path, index=False)
+        print(f"Saved {len(val_df):,} validation records  → {val_path}")
 
 
 def save_clean_data(
