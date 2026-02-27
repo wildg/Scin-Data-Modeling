@@ -73,12 +73,14 @@ The SCIN dataset contains dermatological cases with comprehensive clinical infor
 ### 4) Train
 Three models are available, all using the same multi-label approach:
 - Binarize the multi-label targets: fit a `MultiLabelBinarizer` on training labels across all unique skin conditions, producing a binary matrix
-- Train a classifier (with `OneVsRestClassifier` for LogReg and XGBoost, or natively multi-output for FFNN)
+- Train a classifier (with `OneVsRestClassifier` for LogReg, XGBoost, and LightGBM, or natively multi-output for FFNN)
 - Save the classifier and binarizer together as a single `.joblib` artifact
 
 **Logistic Regression** (`--model logreg`): `LogisticRegression(solver="lbfgs", class_weight="balanced")` — fast linear baseline with automatic inverse-frequency class weighting. Saved to `models/baseline_logreg.joblib`.
 
 **XGBoost** (`--model xgboost`): `XGBClassifier(n_estimators=300, max_depth=4, learning_rate=0.1, tree_method="hist")` — gradient-boosted trees with configurable `scale_pos_weight` and `min_child_weight` for class imbalance handling. Saved to `models/xgboost_model.joblib`.
+
+**LightGBM** (`--model lightgbm`): `LGBMClassifier(n_estimators=300, max_depth=4, learning_rate=0.1)` - gradient-boosted trees with efficient histogram-based training. Saved to `models/lightgbm_model.joblib`.
 
 **Feedforward Neural Network (FFNN)** (`--model ffnn`): `sklearn.neural_network.MLPClassifier` — a small fully-connected classification head trained on embeddings. Typical configuration used in experiments:
 - **Architecture:** hidden layers `(768, 256)`
@@ -150,7 +152,7 @@ Scin-Data-Modeling/
 - `pandas`, `numpy`
 - `google-cloud-storage`, `tqdm`
 - `typer`, `rich`
-- `scikit-learn`, `xgboost`
+- `scikit-learn`, `xgboost`, `lightgbm`
 - `torch`, `torchvision`
 - `streamlit`, `plotly` (dashboard only)
 
@@ -220,6 +222,10 @@ uv run scin_data_modeling evaluate --model logreg
 uv run scin_data_modeling train --mode frozen --model xgboost
 uv run scin_data_modeling evaluate --model xgboost
 
+# LightGBM
+uv run scin_data_modeling train --mode frozen --model lightgbm
+uv run scin_data_modeling evaluate --model lightgbm
+
 # Neural Network Model
 uv run scin_data_modeling train --mode frozen --model ffnn
 uv run scin_data_modeling evaluate --model ffnn
@@ -267,6 +273,10 @@ uv run scin_data_modeling embed --device mps
 # Custom data/model directories
 uv run scin_data_modeling train --mode frozen --model xgboost --processed-dir data/processed --model-dir models
 uv run scin_data_modeling evaluate --model xgboost --processed-dir data/processed --model-dir models
+
+# Same pattern for LightGBM
+uv run scin_data_modeling train --mode frozen --model lightgbm --processed-dir data/processed --model-dir models
+uv run scin_data_modeling evaluate --model lightgbm --processed-dir data/processed --model-dir models
 ```
 
 ### Output artifacts
@@ -282,6 +292,7 @@ uv run scin_data_modeling evaluate --model xgboost --processed-dir data/processe
 | `data/processed/embeddings_validate.npz` | ResNet50 features for validation cases (N × 2048; only when validate split exists) |
 | `models/baseline_logreg.joblib` | Logistic regression classifier + label binarizer (+ top-K indices, thresholds, and best params when tuned) |
 | `models/xgboost_model.joblib` | XGBoost classifier + label binarizer (+ top-K indices, thresholds, and best params when tuned) |
+| `models/lightgbm_model.joblib` | LightGBM classifier + label binarizer (+ top-K indices, thresholds, and best params when tuned) |
 | `models/ffnn_mlp.joblib` | FFNN (sklearn MLP) classifier + label binarizer (+ top-K indices, thresholds, and best params when tuned) |
 
 ### Streamlit Dashboard
@@ -332,6 +343,37 @@ This table compares the logistic regression baseline, the XGBoost baseline, and 
 
 **Notes on metric provenance:** Logistic regression and FFNN metrics were recomputed from local artifacts in the current sklearn 1.8 environment. XGBoost values are taken from the project baseline report to keep the comparison aligned with prior results.
 
+## LightGBM Model Results
+
+Evaluate LightGBM with:
+
+```bash
+uv run scin_data_modeling train --mode frozen --model lightgbm
+uv run scin_data_modeling evaluate --model lightgbm
+```
+
+LightGBM uses the same multi-label setup:
+`OneVsRestClassifier(LGBMClassifier(n_estimators=300, max_depth=4, learning_rate=0.1))`.
+
+| Metric | Value |
+|--------|------:|
+| **Hamming Loss** | 0.0083 |
+| **F1 (micro)** | 0.1847 |
+| **F1 (macro)** | 0.0163 |
+| **F1 (weighted)** | 0.1576 |
+| **Precision (micro)** | 0.2956 |
+| **Recall (micro)** | 0.1343 |
+| **Precision (macro)** | 0.0299 |
+| **Recall (macro)** | 0.0127 |
+
+### Interpreting the LightGBM results
+
+**LightGBM is effectively tied with logistic regression.** Micro F1 is 0.1847 vs 0.1857 for logistic regression, and precision/recall are also nearly identical (0.2956/0.1343 vs 0.2973/0.1350).
+
+**Compared with XGBoost, LightGBM keeps a much better precision-recall balance.** XGBoost reached higher precision (0.5180) but collapsed recall (0.0528), while LightGBM stays close to the baseline trade-off and therefore much higher micro F1.
+
+**Takeaway:** With the current settings (`n_estimators=300`, `max_depth=4`, `learning_rate=0.1`), LightGBM does not materially improve over logistic regression on this dataset, but it avoids the severe recall drop observed with XGBoost. Next steps are class weighting, threshold tuning, and per-label calibration.
+
 ## Notes on Labels
 
 - Raw target source: `dermatologist_skin_condition_on_label_name` in `scin_labels.csv`
@@ -354,3 +396,4 @@ This project is for educational purposes as part of INSY 674 coursework.
 ---
 
 *Last Updated: February 2026*
+
