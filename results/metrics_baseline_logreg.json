@@ -1,813 +1,82 @@
 {
-  "hamming_loss": 0.008961245095013448,
-  "f1_micro": 0.16786079836233367,
-  "f1_macro": 0.013057530525575576,
-  "f1_weighted": 0.14321012697186525,
-  "precision_micro": 0.27702702702702703,
-  "recall_micro": 0.12041116005873716,
-  "precision_macro": 0.02113848194493327,
-  "recall_macro": 0.010390199015825266,
-  "num_classes": 296,
+  "hamming_loss": 0.1506253398586188,
+  "f1_micro": 0.2733473242392445,
+  "f1_macro": 0.15878900170608393,
+  "f1_weighted": 0.27722311281168904,
+  "precision_micro": 0.18842676311030743,
+  "recall_micro": 0.4976122254059217,
+  "precision_macro": 0.1378181292867388,
+  "recall_macro": 0.27202817032139953,
+  "num_classes": 30,
   "num_test_samples": 613,
   "model_name": "baseline_logreg",
+  "split": "test",
   "classification_report": {
-    "AKV - Acrokeratosis verruciformis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Abrasion of wrist": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Abrasion, scrape, or scab": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 13.0
-    },
-    "Abscess": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 8.0
-    },
-    "Acanthosis nigricans": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Acne": {
-      "precision": 0.25,
-      "recall": 0.11764705882352941,
-      "f1-score": 0.16,
-      "support": 17.0
-    },
-    "Acneiform eruption": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Acral erythema": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Actinic Keratosis": {
-      "precision": 1.0,
-      "recall": 0.16666666666666666,
-      "f1-score": 0.2857142857142857,
-      "support": 6.0
-    },
-    "Actinic granuloma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Acute and chronic dermatitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 8.0
-    },
-    "Acute constitutional eczema": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Acute dermatitis, NOS": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 18.0
-    },
-    "Acute generalised exanthematous pustulosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Acute vesicular dermatitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Acute-on-chronic dyshidrotic eczema of hands": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Adnexal neoplasm": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Agminate folliculitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Allergic Contact Dermatitis": {
-      "precision": 0.34959349593495936,
-      "recall": 0.25595238095238093,
-      "f1-score": 0.29553264604810997,
-      "support": 168.0
-    },
-    "Amyloidosis of skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Anetoderma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Angiokeratoma of skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Angiosarcoma of skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Animal bite - wound": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Annular erythema": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Atypical Nevus": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 4.0
-    },
-    "B-Cell Cutaneous Lymphoma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Basal Cell Carcinoma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 5.0
-    },
-    "Benign cutaneous vascular tumor": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Benign tumor of dermis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Blister": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Bullous Pemphigoid": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Bullous dermatitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Bullous dermatitis, NOS": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Bullous dermatosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Burn erythema of abdominal wall": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Burn erythema of back of hand": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Burn erythema of lower leg": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Burn erythema of neck": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Burn of skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "CD - Contact dermatitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 13.0
-    },
-    "Calcinosis cutis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Calciphylaxis cutis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Candida": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Candida infection of flexural skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Candida intertrigo": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Candidal intertrigo": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Cat scratch injury": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Cellulitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 7.0
-    },
-    "Cellulitis of hand excluding finger": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Cheilitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Chemical leukoderma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Chicken pox exanthem": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Chilblain": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Chronic dermatitis, NOS": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Chronic ulcer of skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Clavus": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Collagenoma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Condyloma acuminatum": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Confluent and reticulate papillomatosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Contact burn of skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Contact dermatitis caused by Rhus diversiloba": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Contact dermatitis, NOS": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Contact purpura": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Crusted eczematous dermatitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Cutaneous T Cell Lymphoma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Cutaneous larva migrans": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Cutaneous leishmaniasis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Cutaneous lupus": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 7.0
-    },
-    "Cutaneous metastasis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Cutaneous polyarteritis nodosa": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Cutaneous sarcoidosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 4.0
-    },
-    "Cyst": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 4.0
-    },
-    "Darier's disease": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Deep fungal infection": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Dehiscence": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Dermatitis herpetiformis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 5.0
-    },
-    "Dermatofibroma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Dermatofibrosarcoma protuberans": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Dermatomyositis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Dermatosis due to flea": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Diffuse xanthoma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Discrete papular lichen myxedematosus": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Drug Rash": {
-      "precision": 0.11764705882352941,
-      "recall": 0.08695652173913043,
-      "f1-score": 0.1,
-      "support": 23.0
-    },
-    "Drug induced abnormal pigmentation of skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Drug-induced photosensitivity": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Ecthyma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 3.0
-    },
-    "Ecthyma gangrenosum": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
     "Eczema": {
-      "precision": 0.389937106918239,
-      "recall": 0.31,
-      "f1-score": 0.34540389972144847,
+      "precision": 0.36363636363636365,
+      "recall": 0.94,
+      "f1-score": 0.5244072524407253,
       "support": 200.0
     },
-    "Elephantiasis nostras": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
+    "Allergic Contact Dermatitis": {
+      "precision": 0.3031674208144796,
+      "recall": 0.7976190476190477,
+      "f1-score": 0.43934426229508194,
+      "support": 168.0
     },
-    "Epidermal nevus": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
+    "Insect Bite": {
+      "precision": 0.16942148760330578,
+      "recall": 0.640625,
+      "f1-score": 0.2679738562091503,
+      "support": 64.0
     },
-    "Eruptive xanthoma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
+    "Urticaria": {
+      "precision": 0.24271844660194175,
+      "recall": 0.3787878787878788,
+      "f1-score": 0.2958579881656805,
+      "support": 66.0
     },
-    "Erythema ab igne": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Erythema annulare centrifugum": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Erythema dyschromicum perstans": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Erythema gyratum repens": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Erythema marginatum": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Erythema marginatum in acute rheumatic fever": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Erythema migrans": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Erythema multiforme": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 4.0
-    },
-    "Erythema nodosum": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Flagellate erythema": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Flushing": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
+    "Psoriasis": {
+      "precision": 0.10238907849829351,
+      "recall": 0.5454545454545454,
+      "f1-score": 0.1724137931034483,
+      "support": 55.0
     },
     "Folliculitis": {
-      "precision": 0.25,
-      "recall": 0.16981132075471697,
-      "f1-score": 0.20224719101123595,
+      "precision": 0.1941747572815534,
+      "recall": 0.37735849056603776,
+      "f1-score": 0.2564102564102564,
       "support": 53.0
     },
-    "Foot ulcer": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
+    "Irritant Contact Dermatitis": {
+      "precision": 0.10606060606060606,
+      "recall": 0.15555555555555556,
+      "f1-score": 0.12612612612612611,
+      "support": 45.0
     },
-    "Foreign body": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
+    "Tinea": {
+      "precision": 0.07534246575342465,
+      "recall": 0.2894736842105263,
+      "f1-score": 0.11956521739130435,
+      "support": 38.0
     },
-    "Foreign body reaction of the skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Fox-Fordyce disease": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Fungal dermatitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Fungal dermatosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Furuncle": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Geographic tongue": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Granuloma annulare": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 8.0
-    },
-    "Granuloma faciale": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Granulomatous disorder of the skin and subcutaneous tissue": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Grover's disease": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "HK - Hyperkeratosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Hailey Hailey disease": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Hand foot and mouth disease": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Hemangioma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 5.0
-    },
-    "Hemosiderin pigmentation of lower limb due to varicose veins of lower limb": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Hemosiderin pigmentation of skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Hemosiderin pigmentation of skin due to venous insufficiency": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Herpes Simplex": {
-      "precision": 0.42857142857142855,
-      "recall": 0.09375,
-      "f1-score": 0.15384615384615385,
-      "support": 32.0
+    "Drug Rash": {
+      "precision": 0.08641975308641975,
+      "recall": 0.6086956521739131,
+      "f1-score": 0.15135135135135136,
+      "support": 23.0
     },
     "Herpes Zoster": {
-      "precision": 0.2,
+      "precision": 0.25,
       "recall": 0.06060606060606061,
-      "f1-score": 0.09302325581395349,
+      "f1-score": 0.0975609756097561,
       "support": 33.0
     },
-    "Hidradenitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Histiocytosis of skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Hyperkeratosis of skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Hyperpigmentation": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Hyperpigmentation disorder": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Hypersensitivity": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 24.0
-    },
-    "Ichthyosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Idiopathic guttate hypomelanosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
+    "Herpes Simplex": {
+      "precision": 0.13043478260869565,
+      "recall": 0.28125,
+      "f1-score": 0.1782178217821782,
+      "support": 32.0
     },
     "Impetigo": {
       "precision": 0.0,
@@ -815,527 +84,11 @@
       "f1-score": 0.0,
       "support": 22.0
     },
-    "Infected eczema": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 7.0
-    },
-    "Infection of skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Infection of tick bite": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Infection of toe web": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Infestation caused by Sarcoptes scabiei var bovis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Inflammatory dermatosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Inflicted skin lesions": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 5.0
-    },
-    "Ingrown hair": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Injection site disorder": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Insect Bite": {
-      "precision": 0.23076923076923078,
-      "recall": 0.140625,
-      "f1-score": 0.17475728155339806,
-      "support": 64.0
-    },
-    "Intertrigo": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 7.0
-    },
-    "Inverse psoriasis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Irritant Contact Dermatitis": {
-      "precision": 0.11538461538461539,
-      "recall": 0.06666666666666667,
-      "f1-score": 0.08450704225352113,
-      "support": 45.0
-    },
-    "Jessner lymphocytic infiltrate": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Kaposi's sarcoma of skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Keratoderma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Keratosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Keratosis pilaris": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 12.0
-    },
-    "Knuckle pads": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Koebner phenomenon": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Leukemia cutis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Leukocytoclastic Vasculitis": {
-      "precision": 0.42857142857142855,
-      "recall": 0.1875,
-      "f1-score": 0.2608695652173913,
-      "support": 16.0
-    },
-    "Leukonychia": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Lichen Simplex Chronicus": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 15.0
-    },
-    "Lichen nitidus": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 5.0
-    },
-    "Lichen planus/lichenoid eruption": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 13.0
-    },
-    "Lichen sclerosus": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Lichen spinulosus": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Lichen striatus": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Lichenified eczema": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Lichenified eczematous dermatitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Lichenoid myxedema": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Linear IgA disease": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Livedo reticularis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Livedoid vasculopathy": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Localised cutaneous vasculitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Localized cutaneous vasculitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Localized skin infection": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Lymphangioma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Lymphocutaneous sporotrichosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Lymphomatoid papulosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Majocchi granuloma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Majocchi's granuloma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Melanin pigmentation due to exogenous substance": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Melanocytic Nevus": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 7.0
-    },
-    "Melanoma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 3.0
-    },
-    "Melasma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Milia": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Miliaria": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 9.0
-    },
-    "Mixed diabetic ulcer - foot": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Molluscum Contagiosum": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 10.0
-    },
-    "Morphea/Scleroderma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Muehrcke lines": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Mycetoma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Nail dystrophy": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Nail dystrophy due to trauma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Nail pitting": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Necrobiosis lipoidica": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Neoplasm of uncertain behavior of skin of arm": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Non-specific panniculitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "O/E - ecchymoses present": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 8.0
-    },
-    "O/E - petechiae on skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "O/E - petechiae present": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "O/E - purulent pustules": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "O/E - pustules": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "O/E - skin fissure": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Ochronosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "On examination - hemorrhagic bullae": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Onychodystrophy": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Onychomycosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "PXE (pseudoxanthoma elasticum) like syndrome": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Paget disease": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Panniculitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Parapsoriasis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Paronychia": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Pemphigoid gestationis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Pemphigus": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Pemphigus foliaceus": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Pemphigus vulgaris": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Perforating dermatosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Perifollicular haemorrhage": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Perifolliculitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Perioral Dermatitis": {
-      "precision": 0.3333333333333333,
-      "recall": 0.14285714285714285,
-      "f1-score": 0.2,
-      "support": 7.0
-    },
-    "Petechiae": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Photocontact dermatitis [berloque dermatitis]": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Photodermatitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 9.0
-    },
-    "Phytophotodermatitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
+    "Acute dermatitis, NOS": {
+      "precision": 0.07692307692307693,
+      "recall": 0.05555555555555555,
+      "f1-score": 0.06451612903225806,
+      "support": 18.0
     },
     "Pigmented purpuric eruption": {
       "precision": 0.25,
@@ -1343,23 +96,35 @@
       "f1-score": 0.09090909090909091,
       "support": 18.0
     },
-    "Pincer nail deformity": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
+    "Leukocytoclastic Vasculitis": {
+      "precision": 0.21739130434782608,
+      "recall": 0.3125,
+      "f1-score": 0.2564102564102564,
+      "support": 16.0
     },
-    "Pityriasis alba": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Pityriasis lichenoides": {
-      "precision": 0.5,
-      "recall": 0.25,
+    "Acne": {
+      "precision": 0.28,
+      "recall": 0.4117647058823529,
       "f1-score": 0.3333333333333333,
-      "support": 4.0
+      "support": 17.0
+    },
+    "Hypersensitivity": {
+      "precision": 0.08695652173913043,
+      "recall": 0.16666666666666666,
+      "f1-score": 0.11428571428571428,
+      "support": 24.0
+    },
+    "Lichen planus/lichenoid eruption": {
+      "precision": 0.14285714285714285,
+      "recall": 0.07692307692307693,
+      "f1-score": 0.1,
+      "support": 13.0
+    },
+    "Viral Exanthem": {
+      "precision": 0.0392156862745098,
+      "recall": 0.10526315789473684,
+      "f1-score": 0.05714285714285714,
+      "support": 19.0
     },
     "Pityriasis rosea": {
       "precision": 0.0,
@@ -1367,449 +132,89 @@
       "f1-score": 0.0,
       "support": 14.0
     },
-    "Pityriasis rubra pilaris": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Poisoning by nematocyst": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Porokeratosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Post-Inflammatory hyperpigmentation": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 5.0
-    },
-    "Post-Inflammatory hypopigmentation": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Pressure ulcer stage 2": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Pretibial myxedema": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Primary cutaneous lymphoma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Prurigo": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Prurigo nodularis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 5.0
-    },
-    "Pruritic urticarial papules and plaques of pregnancy": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Pseudolymphoma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Psoriasiform dermatitis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Psoriasis": {
-      "precision": 0.04,
-      "recall": 0.01818181818181818,
-      "f1-score": 0.025,
-      "support": 55.0
-    },
-    "Purpura": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 7.0
-    },
-    "Pyoderma Gangrenosum": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Pyogenic granuloma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "RMSF - Rocky Mountain spotted fever": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Remove from labeling tool": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Rheumatoid nodule": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Rosacea": {
+    "Stasis Dermatitis": {
       "precision": 0.3333333333333333,
-      "recall": 0.42857142857142855,
-      "f1-score": 0.375,
-      "support": 7.0
+      "recall": 0.21428571428571427,
+      "f1-score": 0.2608695652173913,
+      "support": 14.0
     },
-    "Rosai Dorfman disease - I know rare, but I've seen a case like this unilateral.  Rosacea supported bilateral further images": {
+    "Lichen Simplex Chronicus": {
+      "precision": 0.027522935779816515,
+      "recall": 0.2,
+      "f1-score": 0.04838709677419355,
+      "support": 15.0
+    },
+    "Molluscum Contagiosum": {
+      "precision": 0.03571428571428571,
+      "recall": 0.1,
+      "f1-score": 0.05263157894736842,
+      "support": 10.0
+    },
+    "Granuloma annulare": {
       "precision": 0.0,
       "recall": 0.0,
       "f1-score": 0.0,
-      "support": 0.0
-    },
-    "SCC/SCCIS": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 5.0
-    },
-    "SK/ISK": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "SLE - Systemic lupus erythematosus-related syndrome": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
+      "support": 8.0
     },
     "Scabies": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
+      "precision": 0.06818181818181818,
+      "recall": 0.21428571428571427,
+      "f1-score": 0.10344827586206896,
       "support": 14.0
     },
-    "Scar Condition": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 3.0
+    "Keratosis pilaris": {
+      "precision": 0.14285714285714285,
+      "recall": 0.08333333333333333,
+      "f1-score": 0.10526315789473684,
+      "support": 12.0
     },
-    "Seborrheic Dermatitis": {
-      "precision": 0.2,
-      "recall": 0.14285714285714285,
-      "f1-score": 0.16666666666666666,
+    "Rosacea": {
+      "precision": 0.38461538461538464,
+      "recall": 0.7142857142857143,
+      "f1-score": 0.5,
       "support": 7.0
     },
-    "Secondary impetiginization": {
+    "O/E - ecchymoses present": {
       "precision": 0.0,
       "recall": 0.0,
       "f1-score": 0.0,
-      "support": 0.0
+      "support": 8.0
     },
-    "Skin and soft tissue atypical mycobacterial infection": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 4.0
+    "Acute and chronic dermatitis": {
+      "precision": 0.025210084033613446,
+      "recall": 0.375,
+      "f1-score": 0.047244094488188976,
+      "support": 8.0
     },
-    "Skin cancer": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Skin infection": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Skin lesion in drug addict": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Skin striae": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Skin ulcer": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Small plaque parapsoriasis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Sneddon-Wilkinson disease": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Stasis Dermatitis": {
-      "precision": 0.4,
-      "recall": 0.14285714285714285,
-      "f1-score": 0.21052631578947367,
-      "support": 14.0
-    },
-    "Sunburn": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Superficial wound of body region": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 3.0
-    },
-    "Sweet syndrome": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Syphilis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 3.0
-    },
-    "TMEP - telangiectasia macularis eruptiva perstans": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Tinea": {
-      "precision": 0.07142857142857142,
-      "recall": 0.02631578947368421,
-      "f1-score": 0.038461538461538464,
-      "support": 38.0
-    },
-    "Tinea Versicolor": {
+    "CD - Contact dermatitis": {
       "precision": 0.0,
       "recall": 0.0,
       "f1-score": 0.0,
       "support": 13.0
     },
-    "Traumatic blister": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Traumatic petechiae": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Traumatic ulcer": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Tuberculosis of skin and subcutaneous tissue": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Tufted angioma of skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Urticaria": {
-      "precision": 0.3684210526315789,
-      "recall": 0.21212121212121213,
-      "f1-score": 0.2692307692307692,
-      "support": 66.0
-    },
-    "Varicose veins of lower extremity": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Vasculitis of the skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
-    },
-    "Vasculitis of the skin, NOS": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Venous Stasis Ulcer": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Verruca vulgaris": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 9.0
-    },
-    "Viral Exanthem": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 19.0
-    },
-    "Viral dermatological disorders": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Vitiligo": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
-    },
-    "Xanthoma": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "Xerosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 5.0
-    },
-    "gouty tophi": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "granular parakeratosis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "panniculitis of skin": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "pathergy": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "post-sunburn peeling/superficial desquamation": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "relapsing polychondritis": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "superficial hemorrhage": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "varicose vein": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
-    "wound/abrasion": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
-    },
     "micro avg": {
-      "precision": 0.27702702702702703,
-      "recall": 0.12041116005873716,
-      "f1-score": 0.16786079836233367,
-      "support": 1362.0
+      "precision": 0.18842676311030743,
+      "recall": 0.4976122254059217,
+      "f1-score": 0.2733473242392445,
+      "support": 1047.0
     },
     "macro avg": {
-      "precision": 0.02113848194493327,
-      "recall": 0.010390199015825266,
-      "f1-score": 0.013057530525575576,
-      "support": 1362.0
+      "precision": 0.1378181292867388,
+      "recall": 0.27202817032139953,
+      "f1-score": 0.15878900170608393,
+      "support": 1047.0
     },
     "weighted avg": {
-      "precision": 0.18902696030929939,
-      "recall": 0.12041116005873716,
-      "f1-score": 0.14321012697186525,
-      "support": 1362.0
+      "precision": 0.20850363769034352,
+      "recall": 0.4976122254059217,
+      "f1-score": 0.27722311281168904,
+      "support": 1047.0
     },
     "samples avg": {
-      "precision": 0.18156606851549756,
-      "recall": 0.1250679717237629,
-      "f1-score": 0.13515885962868016,
-      "support": 1362.0
+      "precision": 0.19688171625365752,
+      "recall": 0.433931484502447,
+      "f1-score": 0.2535923203133643,
+      "support": 1047.0
     }
   }
 }

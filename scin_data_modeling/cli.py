@@ -194,6 +194,44 @@ def _train(
         raise typer.Exit(code=1)
 
 
+def _tune(processed_dir: Path, model_dir: Path, model_name: str, top_k: int, n_iter: int) -> None:
+    console.print(Rule("[bold blue]Hyperparameter Tuning[/bold blue]"))
+
+    train_emb = processed_dir / "embeddings_train.npz"
+    val_emb = processed_dir / "embeddings_validate.npz"
+    if not train_emb.exists() or not val_emb.exists():
+        console.print(
+            f"[red]Train and validation embeddings required.[/red]\n"
+            f"  Run [bold]scin_data_modeling embed --split all[/bold] first."
+        )
+        raise typer.Exit(code=1)
+
+    console.print(f"  Model:  [cyan]{model_name}[/cyan]")
+    console.print(f"  Top-K:  [cyan]{top_k}[/cyan]")
+
+    if model_name == "logreg":
+        from scin_data_modeling.models.tune import tune_baseline
+
+        artifact_path = tune_baseline(processed_dir=processed_dir, model_dir=model_dir, top_k=top_k)
+    elif model_name == "xgboost":
+        from scin_data_modeling.models.tune import tune_xgboost
+
+        artifact_path = tune_xgboost(processed_dir=processed_dir, model_dir=model_dir, top_k=top_k, n_iter=n_iter)
+    elif model_name == "lightgbm":
+        from scin_data_modeling.models.tune import tune_lightgbm
+
+        artifact_path = tune_lightgbm(processed_dir=processed_dir, model_dir=model_dir, top_k=top_k, n_iter=n_iter)
+    elif model_name == "ffnn":
+        from scin_data_modeling.models.tune import tune_ffnn
+
+        artifact_path = tune_ffnn(processed_dir=processed_dir, model_dir=model_dir, top_k=top_k, n_iter=n_iter)
+    else:
+        console.print(f"[red]Unknown model: {model_name!r}. Use 'logreg', 'xgboost', 'lightgbm', or 'ffnn'.[/red]")
+        raise typer.Exit(code=1)
+
+    console.print(f"[green]✓ Best model saved to {artifact_path}[/green]")
+
+
 _MODEL_FILENAMES = {
     "logreg": "baseline_logreg.joblib",
     "xgboost": "xgboost_model.joblib",
@@ -319,6 +357,18 @@ def train(
         device_str=device,
         model_name=model,
     )
+
+
+@app.command()
+def tune(
+    model: str = typer.Option("logreg", help="Model to tune: 'logreg', 'xgboost', 'lightgbm', or 'ffnn'."),
+    processed_dir: Path = typer.Option(Path("data/processed"), help="Directory containing processed splits."),
+    model_dir: Path = typer.Option(Path("models"), help="Directory to save tuned model artefacts."),
+    top_k: int = typer.Option(30, help="Number of most frequent classes to keep."),
+    n_iter: int = typer.Option(15, help="Number of random hyperparameter combinations to try (XGBoost/FFNN)."),
+) -> None:
+    """Tune hyperparameters using the validation split. Saves best model."""
+    _tune(processed_dir=processed_dir, model_dir=model_dir, model_name=model, top_k=top_k, n_iter=n_iter)
 
 
 @app.command()

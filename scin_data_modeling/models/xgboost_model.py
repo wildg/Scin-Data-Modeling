@@ -14,6 +14,8 @@ def train_xgboost(
     n_estimators: int = 300,
     max_depth: int = 4,
     learning_rate: float = 0.1,
+    scale_pos_weight: float = 1.0,
+    min_child_weight: int = 1,
 ) -> Path:
     """Train a OneVsRestClassifier(XGBClassifier) on cached embeddings.
 
@@ -39,6 +41,8 @@ def train_xgboost(
             n_estimators=n_estimators,
             max_depth=max_depth,
             learning_rate=learning_rate,
+            scale_pos_weight=scale_pos_weight,
+            min_child_weight=min_child_weight,
             tree_method="hist",
             eval_metric="logloss",
             n_jobs=-1,
