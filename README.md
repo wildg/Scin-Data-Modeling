@@ -71,7 +71,7 @@ The SCIN dataset contains dermatological cases with comprehensive clinical infor
 - Save as `.npz` files per split: `embeddings_train.npz`, `embeddings_test.npz`, and optionally `embeddings_validate.npz`
 
 ### 4) Train
-Two models are available, both using the same multi-label approach:
+Three models are available, all using the same multi-label approach:
 - Binarize the multi-label targets: fit a `MultiLabelBinarizer` on training labels across all 370 unique skin conditions, producing a binary matrix of shape (2448 × 370)
 - Train a `OneVsRestClassifier` (one binary classifier per condition, parallelized via `n_jobs=-1`)
 - Save the classifier and binarizer together as a single `.joblib` artifact
@@ -80,10 +80,13 @@ Two models are available, both using the same multi-label approach:
 
 **XGBoost** (`--model xgboost`): `XGBClassifier(n_estimators=300, max_depth=4, learning_rate=0.1, tree_method="hist")` — gradient-boosted trees that can learn non-linear interactions in the embedding space. Saved to `models/xgboost_model.joblib`.
 
+**LightGBM** (`--model lightgbm`): `LGBMClassifier(n_estimators=300, max_depth=4, learning_rate=0.1)` - gradient-boosted trees with efficient histogram-based training. Saved to `models/lightgbm_model.joblib`.
+
 **Feedforward Neural Network (FFNN)** (`--model ffnn`): `sklearn.neural_network.MLPClassifier` — a small fully-connected classification head trained on embeddings. Typical configuration used in experiments:
 - **Architecture:** hidden layers `(768, 256)`
 - **Training:** `adam`, `learning_rate_init=5e-4`, `batch_size=64`, `max_iter=300`, `early_stopping=True`, `n_iter_no_change=20`, `random_state=42`
 - **Artifact:** `models/ffnn_mlp.joblib` (sklearn MLP classifier + label binarizer)
+>>>>>>> 09b6d42e11c96b6af8cd9b2fa2b03ca9af737aff
 
 ### 5) Evaluate
 - Load test embeddings and the saved model artifact
@@ -135,7 +138,7 @@ Scin-Data-Modeling/
 - `pandas`, `numpy`
 - `google-cloud-storage`, `tqdm`
 - `typer`, `rich`
-- `scikit-learn`, `xgboost`
+- `scikit-learn`, `xgboost`, `lightgbm`
 - `torch`, `torchvision`
 - `streamlit`, `plotly` (dashboard only)
 
@@ -188,7 +191,7 @@ The `--split` flag accepts: `train`, `test`, `validate`, `both` (train + test, d
 
 ### Run a specific model (if data and embeddings already exist)
 
-Both models use the same `--mode frozen` flag (train on cached embeddings) and the same `--model` flag to select which model to train or evaluate.
+All three models use the same `--mode frozen` flag (train on cached embeddings) and the same `--model` flag to select which model to train or evaluate.
 
 ```bash
 # Logistic regression (default)
@@ -198,6 +201,10 @@ uv run scin_data_modeling evaluate --model logreg
 # XGBoost
 uv run scin_data_modeling train --mode frozen --model xgboost
 uv run scin_data_modeling evaluate --model xgboost
+
+# LightGBM
+uv run scin_data_modeling train --mode frozen --model lightgbm
+uv run scin_data_modeling evaluate --model lightgbm
 
 # Neural Network Model
 uv run scin_data_modeling train --mode frozen --model ffnn
@@ -213,6 +220,10 @@ uv run scin_data_modeling embed --device mps
 # Custom data/model directories
 uv run scin_data_modeling train --mode frozen --model xgboost --processed-dir data/processed --model-dir models
 uv run scin_data_modeling evaluate --model xgboost --processed-dir data/processed --model-dir models
+
+# Same pattern for LightGBM
+uv run scin_data_modeling train --mode frozen --model lightgbm --processed-dir data/processed --model-dir models
+uv run scin_data_modeling evaluate --model lightgbm --processed-dir data/processed --model-dir models
 ```
 
 ### Output artifacts
@@ -228,6 +239,7 @@ uv run scin_data_modeling evaluate --model xgboost --processed-dir data/processe
 | `data/processed/embeddings_validate.npz` | ResNet50 features for validation cases (N × 2048; only when validate split exists) |
 | `models/baseline_logreg.joblib` | Logistic regression classifier + label binarizer |
 | `models/xgboost_model.joblib` | XGBoost classifier + label binarizer |
+| `models/lightgbm_model.joblib` | LightGBM classifier + label binarizer |
 | `models/ffnn_mlp.joblib` | Feedforward neural network (sklearn MLP) classifier + label binarizer |
 
 ### Streamlit Dashboard
@@ -278,6 +290,37 @@ This table compares the logistic regression baseline, the XGBoost baseline, and 
 
 **Notes on metric provenance:** Logistic regression and FFNN metrics were recomputed from local artifacts in the current sklearn 1.8 environment. XGBoost values are taken from the project baseline report to keep the comparison aligned with prior results.
 
+## LightGBM Model Results
+
+Evaluate LightGBM with:
+
+```bash
+uv run scin_data_modeling train --mode frozen --model lightgbm
+uv run scin_data_modeling evaluate --model lightgbm
+```
+
+LightGBM uses the same multi-label setup:
+`OneVsRestClassifier(LGBMClassifier(n_estimators=300, max_depth=4, learning_rate=0.1))`.
+
+| Metric | Value |
+|--------|------:|
+| **Hamming Loss** | 0.0083 |
+| **F1 (micro)** | 0.1847 |
+| **F1 (macro)** | 0.0163 |
+| **F1 (weighted)** | 0.1576 |
+| **Precision (micro)** | 0.2956 |
+| **Recall (micro)** | 0.1343 |
+| **Precision (macro)** | 0.0299 |
+| **Recall (macro)** | 0.0127 |
+
+### Interpreting the LightGBM results
+
+**LightGBM is effectively tied with logistic regression.** Micro F1 is 0.1847 vs 0.1857 for logistic regression, and precision/recall are also nearly identical (0.2956/0.1343 vs 0.2973/0.1350).
+
+**Compared with XGBoost, LightGBM keeps a much better precision-recall balance.** XGBoost reached higher precision (0.5180) but collapsed recall (0.0528), while LightGBM stays close to the baseline trade-off and therefore much higher micro F1.
+
+**Takeaway:** With the current settings (`n_estimators=300`, `max_depth=4`, `learning_rate=0.1`), LightGBM does not materially improve over logistic regression on this dataset, but it avoids the severe recall drop observed with XGBoost. Next steps are class weighting, threshold tuning, and per-label calibration.
+
 ## Notes on Labels
 
 - Raw target source: `dermatologist_skin_condition_on_label_name` in `scin_labels.csv`
@@ -300,3 +343,4 @@ This project is for educational purposes as part of INSY 674 coursework.
 ---
 
 *Last Updated: February 2026*
+
