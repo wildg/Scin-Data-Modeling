@@ -268,17 +268,24 @@ uv run scin_data_modeling evaluate --model lightgbm
 LightGBM uses the same multi-label setup:
 `OneVsRestClassifier(LGBMClassifier(n_estimators=300, max_depth=4, learning_rate=0.1))`.
 
+| Metric | Value |
+|--------|------:|
+| **Hamming Loss** | 0.0083 |
+| **F1 (micro)** | 0.1847 |
+| **F1 (macro)** | 0.0163 |
+| **F1 (weighted)** | 0.1576 |
+| **Precision (micro)** | 0.2956 |
+| **Recall (micro)** | 0.1343 |
+| **Precision (macro)** | 0.0299 |
+| **Recall (macro)** | 0.0127 |
+
 ### Interpreting the LightGBM results
 
-Use this checklist when reviewing LightGBM metrics:
+**LightGBM is effectively tied with logistic regression.** Micro F1 is 0.1847 vs 0.1857 for logistic regression, and precision/recall are also nearly identical (0.2956/0.1343 vs 0.2973/0.1350).
 
-- Compare **micro F1** first against logistic regression and XGBoost; this is the best single summary for sparse multi-label performance.
-- Inspect the **precision/recall trade-off**: if precision rises while recall collapses, LightGBM is becoming too conservative (similar to XGBoost behavior).
-- Treat **Hamming Loss** as secondary; it can look strong even when the model misses many true labels.
-- Check **macro F1/recall** to see whether rare conditions are being captured; very low macro metrics indicate poor minority-class coverage.
-- Prefer the model with the best balance for your objective: higher recall for broader condition coverage/screening, or higher precision for fewer false positives.
+**Compared with XGBoost, LightGBM keeps a much better precision-recall balance.** XGBoost reached higher precision (0.5180) but collapsed recall (0.0528), while LightGBM stays close to the baseline trade-off and therefore much higher micro F1.
 
-If LightGBM shows high precision but low recall, next steps are threshold tuning, class weighting (`class_weight="balanced"`), and per-label calibration.
+**Takeaway:** With the current settings (`n_estimators=300`, `max_depth=4`, `learning_rate=0.1`), LightGBM does not materially improve over logistic regression on this dataset, but it avoids the severe recall drop observed with XGBoost. Next steps are class weighting, threshold tuning, and per-label calibration.
 
 ## Notes on Labels
 
@@ -302,3 +309,4 @@ This project is for educational purposes as part of INSY 674 coursework.
 ---
 
 *Last Updated: February 2026*
+
