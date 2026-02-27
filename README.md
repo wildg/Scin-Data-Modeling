@@ -70,7 +70,7 @@ The SCIN dataset contains dermatological cases with comprehensive clinical infor
 - Save as `.npz` files: `embeddings_train.npz` (2448 × 2048), `embeddings_test.npz` (613 × 2048)
 
 ### 4) Train
-Two models are available, both using the same multi-label approach:
+Three models are available, all using the same multi-label approach:
 - Binarize the multi-label targets: fit a `MultiLabelBinarizer` on training labels across all 370 unique skin conditions, producing a binary matrix of shape (2448 × 370)
 - Train a `OneVsRestClassifier` (one binary classifier per condition, parallelized via `n_jobs=-1`)
 - Save the classifier and binarizer together as a single `.joblib` artifact
@@ -78,6 +78,8 @@ Two models are available, both using the same multi-label approach:
 **Logistic Regression** (`--model logreg`): `LogisticRegression(solver="lbfgs")` — fast linear baseline. Saved to `models/baseline_logreg.joblib`.
 
 **XGBoost** (`--model xgboost`): `XGBClassifier(n_estimators=300, max_depth=4, learning_rate=0.1, tree_method="hist")` — gradient-boosted trees that can learn non-linear interactions in the embedding space. Saved to `models/xgboost_model.joblib`.
+
+**LightGBM** (`--model lightgbm`): `LGBMClassifier(n_estimators=300, max_depth=4, learning_rate=0.1)` - gradient-boosted trees with efficient histogram-based training. Saved to `models/lightgbm_model.joblib`.
 
 ### 5) Evaluate
 - Load test embeddings and the saved model artifact
@@ -125,7 +127,7 @@ Scin-Data-Modeling/
 - `pandas`, `numpy`
 - `google-cloud-storage`, `tqdm`
 - `typer`, `rich`
-- `scikit-learn`, `xgboost`
+- `scikit-learn`, `xgboost`, `lightgbm`
 - `torch`, `torchvision`
 
 ### Installation
@@ -156,7 +158,7 @@ uv run scin_data_modeling evaluate
 
 ### Run a specific model (if data and embeddings already exist)
 
-Both models use the same `--mode frozen` flag (train on cached embeddings) and the same `--model` flag to select which model to train or evaluate.
+All three models use the same `--mode frozen` flag (train on cached embeddings) and the same `--model` flag to select which model to train or evaluate.
 
 ```bash
 # Logistic regression (default)
@@ -166,6 +168,10 @@ uv run scin_data_modeling evaluate --model logreg
 # XGBoost
 uv run scin_data_modeling train --mode frozen --model xgboost
 uv run scin_data_modeling evaluate --model xgboost
+
+# LightGBM
+uv run scin_data_modeling train --mode frozen --model lightgbm
+uv run scin_data_modeling evaluate --model lightgbm
 ```
 
 ### Options
@@ -177,6 +183,10 @@ uv run scin_data_modeling embed --device mps
 # Custom data/model directories
 uv run scin_data_modeling train --mode frozen --model xgboost --processed-dir data/processed --model-dir models
 uv run scin_data_modeling evaluate --model xgboost --processed-dir data/processed --model-dir models
+
+# Same pattern for LightGBM
+uv run scin_data_modeling train --mode frozen --model lightgbm --processed-dir data/processed --model-dir models
+uv run scin_data_modeling evaluate --model lightgbm --processed-dir data/processed --model-dir models
 ```
 
 ### Output artifacts
@@ -190,6 +200,7 @@ uv run scin_data_modeling evaluate --model xgboost --processed-dir data/processe
 | `data/processed/embeddings_test.npz` | ResNet50 features (613 × 2048) |
 | `models/baseline_logreg.joblib` | Logistic regression classifier + label binarizer |
 | `models/xgboost_model.joblib` | XGBoost classifier + label binarizer |
+| `models/lightgbm_model.joblib` | LightGBM classifier + label binarizer |
 
 ## Baseline Model Results
 
@@ -244,6 +255,30 @@ The XGBoost model was evaluated on the same 613-case held-out test set using `On
 **Hamming Loss improves slightly (0.0083 → 0.0070)** because XGBoost predicts fewer positive labels overall — making fewer false positives at the cost of far more false negatives. As noted for the logistic regression, this metric is misleading for sparse multi-label problems.
 
 **Takeaway:** On this dataset, logistic regression outperforms XGBoost overall (higher F1). XGBoost would benefit from class-weight tuning (`scale_pos_weight`) or threshold calibration to rebalance precision and recall. These remain directions for future work.
+
+## LightGBM Model Results
+
+Evaluate LightGBM with:
+
+```bash
+uv run scin_data_modeling train --mode frozen --model lightgbm
+uv run scin_data_modeling evaluate --model lightgbm
+```
+
+LightGBM uses the same multi-label setup:
+`OneVsRestClassifier(LGBMClassifier(n_estimators=300, max_depth=4, learning_rate=0.1))`.
+
+### Interpreting the LightGBM results
+
+Use this checklist when reviewing LightGBM metrics:
+
+- Compare **micro F1** first against logistic regression and XGBoost; this is the best single summary for sparse multi-label performance.
+- Inspect the **precision/recall trade-off**: if precision rises while recall collapses, LightGBM is becoming too conservative (similar to XGBoost behavior).
+- Treat **Hamming Loss** as secondary; it can look strong even when the model misses many true labels.
+- Check **macro F1/recall** to see whether rare conditions are being captured; very low macro metrics indicate poor minority-class coverage.
+- Prefer the model with the best balance for your objective: higher recall for broader condition coverage/screening, or higher precision for fewer false positives.
+
+If LightGBM shows high precision but low recall, next steps are threshold tuning, class weighting (`class_weight="balanced"`), and per-label calibration.
 
 ## Notes on Labels
 

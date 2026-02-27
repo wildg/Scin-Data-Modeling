@@ -156,8 +156,13 @@ def _train(
 
             console.print("Training XGBoost model…")
             artifact_path = train_xgboost(processed_dir=processed_dir, model_dir=model_dir)
+        elif model_name == "lightgbm":
+            from scin_data_modeling.models.lightgbm_model import train_lightgbm
+
+            console.print("Training LightGBM model…")
+            artifact_path = train_lightgbm(processed_dir=processed_dir, model_dir=model_dir)
         else:
-            console.print(f"[red]Unknown model: {model_name!r}. Use 'logreg' or 'xgboost'.[/red]")
+            console.print(f"[red]Unknown model: {model_name!r}. Use 'logreg', 'xgboost', or 'lightgbm'.[/red]")
             raise typer.Exit(code=1)
 
         console.print(f"[green]✓ Model saved to {artifact_path}[/green]")
@@ -176,6 +181,7 @@ def _train(
 _MODEL_FILENAMES = {
     "logreg": "baseline_logreg.joblib",
     "xgboost": "xgboost_model.joblib",
+    "lightgbm": "lightgbm_model.joblib",
 }
 
 
@@ -183,7 +189,7 @@ def _evaluate(processed_dir: Path, model_dir: Path, model_name: str) -> None:
     console.print(Rule("[bold blue]Step 5 — Evaluate[/bold blue]"))
 
     if model_name not in _MODEL_FILENAMES:
-        console.print(f"[red]Unknown model: {model_name!r}. Use 'logreg' or 'xgboost'.[/red]")
+        console.print(f"[red]Unknown model: {model_name!r}. Use 'logreg', 'xgboost', or 'lightgbm'.[/red]")
         raise typer.Exit(code=1)
 
     model_path = Path(model_dir) / _MODEL_FILENAMES[model_name]
@@ -279,7 +285,7 @@ def embed(
 @app.command()
 def train(
     mode: str = typer.Option("frozen", help="Training mode: 'frozen' (head only) or 'finetune' (end-to-end)."),
-    model: str = typer.Option("logreg", help="Model to train: 'logreg' or 'xgboost'."),
+    model: str = typer.Option("logreg", help="Model to train: 'logreg', 'xgboost', or 'lightgbm'."),
     backbone: str = typer.Option("resnet50", help="Backbone for finetune mode."),
     device: str = typer.Option("cpu", help="Torch device (cpu, cuda, mps)."),
     processed_dir: Path = typer.Option(Path("data/processed"), help="Directory containing processed splits."),
@@ -298,7 +304,7 @@ def train(
 
 @app.command()
 def evaluate(
-    model: str = typer.Option("logreg", help="Model to evaluate: 'logreg' or 'xgboost'."),
+    model: str = typer.Option("logreg", help="Model to evaluate: 'logreg', 'xgboost', or 'lightgbm'."),
     processed_dir: Path = typer.Option(Path("data/processed"), help="Directory containing processed splits."),
     model_dir: Path = typer.Option(Path("models"), help="Directory containing trained model artefacts."),
 ) -> None:
