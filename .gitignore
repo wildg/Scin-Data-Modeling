@@ -50,8 +50,8 @@ dmypy.json
 site/
 
 # IDE files
-# .idea/
-# .vscode/
+.idea/*
+.vscode/*
 
 # Misc
 .ds_store

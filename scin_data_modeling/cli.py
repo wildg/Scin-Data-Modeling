@@ -34,6 +34,7 @@ def _preprocess(
     raw_dir: Path,
     out_dir: Path,
     test_size: float,
+    validate_size: float,
     seed: int,
     create_split: bool,
     create_embeddings: bool,
@@ -43,7 +44,7 @@ def _preprocess(
 ) -> None:
     from scin_data_modeling.data.preprocess import (
         build_clean_df,
-        create_train_test_split,
+        create_train_test_val_split,
         load_combined_df,
         save_clean_data,
         save_splits,
@@ -79,9 +80,15 @@ def _preprocess(
         create_split = True
 
     if create_split:
-        console.print(f"Splitting {1 - test_size:.0%} train / {test_size:.0%} test (seed={seed})…")
-        train_df, test_df = create_train_test_split(cleaned_df, test_size=test_size, random_state=seed)
-        save_splits(train_df, test_df, out_dir=out_dir)
+        train_pct = 1 - test_size - validate_size
+        split_desc = f"{train_pct:.0%} train / {test_size:.0%} test"
+        if validate_size > 0:
+            split_desc += f" / {validate_size:.0%} validate"
+        console.print(f"Splitting {split_desc} (seed={seed})…")
+        train_df, test_df, val_df = create_train_test_val_split(
+            cleaned_df, test_size=test_size, validate_size=validate_size, random_state=seed
+        )
+        save_splits(train_df, test_df, val_df=val_df, out_dir=out_dir)
     else:
         console.print("[dim]Skipping train/test split (--no-create-split).[/dim]")
 
@@ -114,7 +121,11 @@ def _embed(backbone_name: str, split: str, device_str: str, processed_dir: Path)
     model, transform, embed_dim = get_backbone(backbone_name, pretrained=True)
     console.print(f"  Embed dim: [cyan]{embed_dim}[/cyan]")
 
-    splits = ["train", "test"] if split == "both" else [split]
+    split_map = {
+        "both": ["train", "test"],
+        "all": ["train", "test", "validate"],
+    }
+    splits = split_map.get(split, [split])
     for s in splits:
         console.print(f"\nEmbedding [bold]{s}[/bold] split…")
         out_path = embed_split(
@@ -156,8 +167,13 @@ def _train(
 
             console.print("Training XGBoost model…")
             artifact_path = train_xgboost(processed_dir=processed_dir, model_dir=model_dir)
+        elif model_name == "ffnn":
+            from scin_data_modeling.models.ffnn_model import train_ffnn
+
+            console.print("Training sklearn feedforward neural network (MLPClassifier)…")
+            artifact_path = train_ffnn(processed_dir=processed_dir, model_dir=model_dir)
         else:
-            console.print(f"[red]Unknown model: {model_name!r}. Use 'logreg' or 'xgboost'.[/red]")
+            console.print(f"[red]Unknown model: {model_name!r}. Use 'logreg', 'xgboost', or 'ffnn'.[/red]")
             raise typer.Exit(code=1)
 
         console.print(f"[green]✓ Model saved to {artifact_path}[/green]")
@@ -176,6 +192,7 @@ def _train(
 _MODEL_FILENAMES = {
     "logreg": "baseline_logreg.joblib",
     "xgboost": "xgboost_model.joblib",
+    "ffnn": "ffnn_mlp.joblib",
 }
 
 
@@ -183,7 +200,7 @@ def _evaluate(processed_dir: Path, model_dir: Path, model_name: str) -> None:
     console.print(Rule("[bold blue]Step 5 — Evaluate[/bold blue]"))
 
     if model_name not in _MODEL_FILENAMES:
-        console.print(f"[red]Unknown model: {model_name!r}. Use 'logreg' or 'xgboost'.[/red]")
+        console.print(f"[red]Unknown model: {model_name!r}. Use 'logreg', 'xgboost', or 'ffnn'.[/red]")
         raise typer.Exit(code=1)
 
     model_path = Path(model_dir) / _MODEL_FILENAMES[model_name]
@@ -227,11 +244,12 @@ def preprocess(
     raw_dir: Path = typer.Option(Path("data/raw"), help="Directory containing raw CSVs."),
     out_dir: Path = typer.Option(Path("data/processed"), help="Output directory for cleaned data."),
     test_size: float = typer.Option(0.2, help="Fraction of data reserved for the test split."),
-    seed: int = typer.Option(42, help="Random seed for the train/test split."),
+    validate_size: float = typer.Option(0.0, help="Fraction of data reserved for the validation split."),
+    seed: int = typer.Option(42, help="Random seed for the train/test/validation split."),
     create_split: bool = typer.Option(
         False,
         "--create-split/--no-create-split",
-        help="Also create train/test CSV files from cleaned data.",
+        help="Also create train/test/validation CSV files from cleaned data.",
     ),
     create_embeddings: bool = typer.Option(
         False,
@@ -248,7 +266,7 @@ def preprocess(
     ),
     embedding_split: str = typer.Option(
         "both",
-        help="Which split to embed when creating embeddings: 'train', 'test', or 'both'.",
+        help="Which split to embed: 'train', 'test', 'validate', 'both' (train+test), or 'all'.",
     ),
 ) -> None:
     """Merge and clean SCIN raw data; optionally split and create image embeddings."""
@@ -256,6 +274,7 @@ def preprocess(
         raw_dir=raw_dir,
         out_dir=out_dir,
         test_size=test_size,
+        validate_size=validate_size,
         seed=seed,
         create_split=create_split,
         create_embeddings=create_embeddings,
@@ -268,9 +287,9 @@ def preprocess(
 @app.command()
 def embed(
     backbone: str = typer.Option("resnet50", help="Backbone model name (resnet50, efficientnet_b0)."),
-    split: str = typer.Option("both", help="Which split to embed: 'train', 'test', or 'both'."),
+    split: str = typer.Option("both", help="Which split to embed: 'train', 'test', 'validate', 'both' (train+test), or 'all'."),
     device: str = typer.Option("cpu", help="Torch device (cpu, cuda, mps)."),
-    processed_dir: Path = typer.Option(Path("data/processed"), help="Directory with train.csv / test.csv."),
+    processed_dir: Path = typer.Option(Path("data/processed"), help="Directory with split CSV files."),
 ) -> None:
     """Stream images from GCS, encode with a frozen backbone, and save embeddings."""
     _embed(backbone_name=backbone, split=split, device_str=device, processed_dir=processed_dir)
@@ -279,7 +298,7 @@ def embed(
 @app.command()
 def train(
     mode: str = typer.Option("frozen", help="Training mode: 'frozen' (head only) or 'finetune' (end-to-end)."),
-    model: str = typer.Option("logreg", help="Model to train: 'logreg' or 'xgboost'."),
+    model: str = typer.Option("logreg", help="Model to train: 'logreg', 'xgboost', or 'ffnn'."),
     backbone: str = typer.Option("resnet50", help="Backbone for finetune mode."),
     device: str = typer.Option("cpu", help="Torch device (cpu, cuda, mps)."),
     processed_dir: Path = typer.Option(Path("data/processed"), help="Directory containing processed splits."),
@@ -298,7 +317,7 @@ def train(
 
 @app.command()
 def evaluate(
-    model: str = typer.Option("logreg", help="Model to evaluate: 'logreg' or 'xgboost'."),
+    model: str = typer.Option("logreg", help="Model to evaluate: 'logreg', 'xgboost', or 'ffnn'."),
     processed_dir: Path = typer.Option(Path("data/processed"), help="Directory containing processed splits."),
     model_dir: Path = typer.Option(Path("models"), help="Directory containing trained model artefacts."),
 ) -> None:
@@ -311,12 +330,13 @@ def pipeline(
     raw_dir: Path = typer.Option(Path("data/raw"), help="Raw data directory."),
     processed_dir: Path = typer.Option(Path("data/processed"), help="Processed data directory."),
     test_size: float = typer.Option(0.2, help="Fraction of data reserved for the test split."),
-    seed: int = typer.Option(42, help="Random seed for the train/test split."),
+    validate_size: float = typer.Option(0.0, help="Fraction of data reserved for the validation split."),
+    seed: int = typer.Option(42, help="Random seed for the train/test/validation split."),
     images: bool = typer.Option(False, "--images/--no-images", help="Download images during the download step."),
     create_split: bool = typer.Option(
         False,
         "--create-split/--no-create-split",
-        help="Also create train/test CSV files from cleaned data.",
+        help="Also create train/test/validation CSV files from cleaned data.",
     ),
     create_embeddings: bool = typer.Option(
         False,
@@ -333,7 +353,7 @@ def pipeline(
     ),
     embedding_split: str = typer.Option(
         "both",
-        help="Which split to embed when creating embeddings: 'train', 'test', or 'both'.",
+        help="Which split to embed: 'train', 'test', 'validate', 'both' (train+test), or 'all'.",
     ),
     skip_download: bool = typer.Option(False, "--skip-download/--no-skip-download", help="Skip the download step."),
     skip_preprocess: bool = typer.Option(
@@ -360,6 +380,7 @@ def pipeline(
             raw_dir=raw_dir,
             out_dir=processed_dir,
             test_size=test_size,
+            validate_size=validate_size,
             seed=seed,
             create_split=create_split,
             create_embeddings=create_embeddings,
