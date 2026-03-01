@@ -10,6 +10,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 
 from scin_data_modeling.evaluation.metrics import evaluate_baseline
@@ -122,6 +123,150 @@ def _inject_theme() -> None:
             border-color: rgba(71, 85, 105, 0.25);
             color: #334155;
         }
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.55rem;
+            margin: 0.35rem 0 1rem;
+        }
+        .workflow-step {
+            border: 1px solid rgba(100, 116, 139, 0.24);
+            border-radius: 12px;
+            padding: 0.6rem 0.7rem;
+            background: rgba(255, 255, 255, 0.7);
+            color: #334155;
+            font-size: 0.84rem;
+            line-height: 1.2;
+        }
+        .workflow-step b {
+            display: block;
+            color: #0f172a;
+            font-size: 0.78rem;
+            margin-bottom: 0.15rem;
+        }
+        .workflow-step-active {
+            background: rgba(2, 132, 199, 0.12);
+            border-color: rgba(2, 132, 199, 0.45);
+            box-shadow: inset 0 0 0 1px rgba(2, 132, 199, 0.18);
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            border-radius: 999px;
+            padding: 0.25rem 0.75rem;
+            border: 1px solid;
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin: 0.2rem 0 0.55rem;
+        }
+        .status-badge-success {
+            background: rgba(16, 185, 129, 0.14);
+            border-color: rgba(5, 150, 105, 0.35);
+            color: #065f46;
+        }
+        .status-badge-warning {
+            background: rgba(245, 158, 11, 0.14);
+            border-color: rgba(217, 119, 6, 0.35);
+            color: #92400e;
+        }
+        .status-badge-danger {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(220, 38, 38, 0.35);
+            color: #7f1d1d;
+        }
+        .status-badge-neutral {
+            background: rgba(148, 163, 184, 0.18);
+            border-color: rgba(100, 116, 139, 0.3);
+            color: #334155;
+        }
+        .recommendation-card {
+            border-radius: 14px;
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            background: rgba(255, 255, 255, 0.82);
+            padding: 0.8rem 0.9rem;
+            margin: 0.5rem 0 0.9rem;
+        }
+        .recommendation-card h4 {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #0f172a;
+        }
+        .recommendation-card p {
+            margin: 0.35rem 0 0;
+            color: #334155;
+            font-size: 0.86rem;
+        }
+        .recommendation-card-danger {
+            border-color: rgba(220, 38, 38, 0.36);
+            background: rgba(254, 226, 226, 0.42);
+        }
+        .recommendation-card-warning {
+            border-color: rgba(217, 119, 6, 0.32);
+            background: rgba(255, 237, 213, 0.42);
+        }
+        .recommendation-card-success {
+            border-color: rgba(5, 150, 105, 0.35);
+            background: rgba(209, 250, 229, 0.4);
+        }
+        .recommendation-card-neutral {
+            border-color: rgba(100, 116, 139, 0.3);
+            background: rgba(241, 245, 249, 0.6);
+        }
+        .meta-card {
+            border-radius: 12px;
+            border: 1px solid rgba(100, 116, 139, 0.24);
+            background: rgba(255, 255, 255, 0.78);
+            padding: 0.7rem 0.8rem;
+            margin: 0.45rem 0 0.8rem;
+        }
+        .meta-card b {
+            color: #0f172a;
+        }
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.6rem;
+            font-size: 0.82rem;
+            color: #334155;
+            padding: 0.12rem 0;
+        }
+        .status-chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            margin-top: 0.3rem;
+        }
+        .status-chip {
+            border-radius: 999px;
+            border: 1px solid;
+            padding: 0.22rem 0.65rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+        .status-chip-active {
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.25);
+        }
+        .status-chip-strong {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(5, 150, 105, 0.35);
+            color: #065f46;
+        }
+        .status-chip-partial {
+            background: rgba(245, 158, 11, 0.16);
+            border-color: rgba(217, 119, 6, 0.35);
+            color: #92400e;
+        }
+        .status-chip-mismatch {
+            background: rgba(239, 68, 68, 0.14);
+            border-color: rgba(220, 38, 38, 0.35);
+            color: #7f1d1d;
+        }
+        .status-chip-awaiting {
+            background: rgba(148, 163, 184, 0.16);
+            border-color: rgba(100, 116, 139, 0.32);
+            color: #334155;
+        }
         [data-testid="stMetricValue"] {
             color: #0f172a;
         }
@@ -225,6 +370,52 @@ def _to_csv_bytes(df: pd.DataFrame) -> bytes:
     return df.to_csv(index=False).encode("utf-8")
 
 
+def _render_workflow_steps(active_step: int) -> None:
+    steps = [
+        ("Step 1", "Select case"),
+        ("Step 2", "Enter clinician diagnosis"),
+        ("Step 3", "Review match + risk"),
+        ("Step 4", "Save final decision"),
+    ]
+    cards = []
+    for idx, (title, subtitle) in enumerate(steps, start=1):
+        active_cls = " workflow-step-active" if idx == active_step else ""
+        cards.append(
+            f"<div class='workflow-step{active_cls}'><b>{escape(title)}</b>{escape(subtitle)}</div>"
+        )
+    st.markdown(
+        f"<div class='workflow-grid'>{''.join(cards)}</div>",
+        unsafe_allow_html=True,
+    )
+
+
+def _render_status_badge(label: str) -> None:
+    tone_map = {
+        "Strong Match": "success",
+        "Partial Match": "warning",
+        "Mismatch": "danger",
+        "Awaiting clinician input": "neutral",
+    }
+    tone = tone_map.get(label, "neutral")
+    st.markdown(
+        f"<span class='status-badge status-badge-{tone}'>{escape(label)}</span>",
+        unsafe_allow_html=True,
+    )
+
+
+def _render_recommendation_card(title: str, body: str, tone: str) -> None:
+    tone_cls = tone if tone in {"danger", "warning", "success"} else "neutral"
+    st.markdown(
+        (
+            f"<section class='recommendation-card recommendation-card-{tone_cls}'>"
+            f"<h4>{escape(title)}</h4>"
+            f"<p>{escape(body)}</p>"
+            "</section>"
+        ),
+        unsafe_allow_html=True,
+    )
+
+
 # ── app layout ────────────────────────────────────────────────────────────────
 
 st.set_page_config(page_title="SCIN Model Dashboard", layout="wide")
@@ -236,12 +427,30 @@ _render_banner(
 
 with st.sidebar:
     st.subheader("Navigation")
+    audience_mode = st.selectbox(
+        "View mode",
+        ["Clinician (simplified)", "Technical (full)"],
+        index=0,
+    )
+    if audience_mode == "Clinician (simplified)":
+        page_options = [
+            "Clinical Verification",
+        ]
+    else:
+        page_options = [
+            "Model Performance",
+            "Data Explorer",
+            "Prediction Explorer",
+        ]
     page = st.radio(
         "Navigate",
-        ["Model Performance", "Data Explorer", "Prediction Explorer"],
+        page_options,
         label_visibility="collapsed",
     )
-    st.caption("UI tuned for quick metric scan, data profiling, and case-level prediction review.")
+    if audience_mode == "Clinician (simplified)":
+        st.caption("Simplified clinical workflow for diagnosis verification.")
+    else:
+        st.caption("Technical workflow for model evaluation, data profiling, and case-level analysis.")
 
 
 # ── Page 1: Model Performance ─────────────────────────────────────────────────
@@ -1118,7 +1327,451 @@ elif page == "Data Explorer":
         st.plotly_chart(fig3, use_container_width=True)
 
 
-# ── Page 3: Prediction Explorer ───────────────────────────────────────────────
+# ── Page 3: Clinical Verification ─────────────────────────────────────────────
+
+elif page == "Clinical Verification":
+    st.header("Clinical Verification")
+    st.markdown(
+        "Use this view to check whether model suggestions align with your working diagnosis, "
+        "identify possible mismatches, and record your final decision."
+    )
+    st.info(
+        "This dashboard is for verification support, not autonomous diagnosis. "
+        "Final clinical judgment should remain with the treating clinician."
+    )
+
+    if not _check_artifacts([MODEL_PATH, PROCESSED_DIR / "embeddings_test.npz", PROCESSED_DIR / "test.csv"]):
+        st.stop()
+
+    _, test_df = load_csvs()
+    _, Y_proba, class_names = load_predictions()
+
+    if "clinical_review_log" not in st.session_state:
+        st.session_state["clinical_review_log"] = []
+
+    verification_threshold = 0.35
+    verification_top_k = 8
+    show_ground_truth = False
+    with st.expander(
+        "Advanced settings",
+        expanded=False,
+    ):
+        control_col1, control_col2, control_col3 = st.columns([1, 1, 1.3])
+        verification_threshold = control_col1.slider(
+            "Verification threshold",
+            min_value=0.05,
+            max_value=0.95,
+            value=0.35,
+            step=0.01,
+            key="cv_threshold",
+        )
+        verification_top_k = control_col2.slider(
+            "Top suggestions shown",
+            min_value=3,
+            max_value=15,
+            value=8,
+            step=1,
+            key="cv_top_k",
+        )
+        show_ground_truth = control_col3.toggle(
+            "Show hidden ground truth (demo only)",
+            value=False,
+            key="cv_show_ground_truth",
+        )
+
+    st.markdown("**Case filters**")
+    filter_col1, filter_col2, filter_col3 = st.columns(3)
+    age_values = sorted(
+        test_df["age_group"].fillna("Unknown").astype(str).unique().tolist()
+    )
+    sex_values = sorted(
+        test_df["sex_at_birth"].fillna("Unknown").astype(str).unique().tolist()
+    )
+    condition_values = sorted(
+        {
+            label
+            for labels in test_df["label_parsed"]
+            for label in labels
+        }
+    )
+
+    selected_age = filter_col1.selectbox(
+        "Filter by age",
+        options=["All"] + age_values,
+        index=0,
+        key="cv_filter_age",
+    )
+    selected_sex = filter_col2.selectbox(
+        "Filter by sex",
+        options=["All"] + sex_values,
+        index=0,
+        key="cv_filter_sex",
+    )
+    selected_condition = filter_col3.selectbox(
+        "Filter by condition",
+        options=["All"] + condition_values,
+        index=0,
+        key="cv_filter_condition",
+    )
+
+    filtered_df = test_df.copy()
+    if selected_age != "All":
+        filtered_df = filtered_df[
+            filtered_df["age_group"].fillna("Unknown").astype(str) == selected_age
+        ]
+    if selected_sex != "All":
+        filtered_df = filtered_df[
+            filtered_df["sex_at_birth"].fillna("Unknown").astype(str) == selected_sex
+        ]
+    if selected_condition != "All":
+        filtered_df = filtered_df[
+            filtered_df["label_parsed"].apply(
+                lambda labels: selected_condition in labels
+            )
+        ]
+
+    if filtered_df.empty:
+        st.warning(
+            "No cases match the selected filters. "
+            "Adjust age, sex, or condition to continue."
+        )
+        st.stop()
+
+    st.caption(f"{len(filtered_df)} case(s) match your current filters.")
+    case_options = {
+        _format_case_option(int(i), filtered_df.loc[i]): int(i)
+        for i in filtered_df.index.tolist()
+    }
+    selected_case = st.selectbox(
+        "Select case for verification",
+        options=list(case_options.keys()),
+        index=0,
+        help="Now scoped to your selected age/sex/condition filters.",
+    )
+    case_idx = case_options[selected_case]
+    row = test_df.iloc[case_idx]
+    true_label_set = set(row["label_parsed"])
+    proba_row = np.asarray(Y_proba[case_idx], dtype=float)
+
+    ranked_idx = np.argsort(proba_row)[::-1]
+    top_idx = ranked_idx[:verification_top_k]
+    top_predictions_df = pd.DataFrame(
+        [
+            {
+                "condition": class_names[i],
+                "confidence": float(proba_row[i]),
+            }
+            for i in top_idx
+        ]
+    )
+    model_suggested_labels = sorted(
+        top_predictions_df[top_predictions_df["confidence"] >= verification_threshold][
+            "condition"
+        ].tolist()
+    )
+    model_suggested_set = set(model_suggested_labels)
+
+    st.markdown("**Clinician input**")
+    st.caption("Enter one or more suspected diagnoses to verify against model suggestions.")
+    clinician_labels = st.multiselect(
+        "Clinician suspected diagnosis(es)",
+        options=class_names,
+        key="cv_clinician_labels",
+    )
+    if st.button("Prefill clinician input from hidden labels (demo)", key=f"cv_prefill_{case_idx}"):
+        st.session_state["cv_clinician_labels"] = sorted(true_label_set)
+        st.rerun()
+
+    clinician_set = set(clinician_labels)
+    overlap_set = clinician_set & model_suggested_set
+    clinician_only = sorted(clinician_set - model_suggested_set)
+    model_only = sorted(model_suggested_set - clinician_set)
+    union_set = clinician_set | model_suggested_set
+    agreement_score = (len(overlap_set) / len(union_set)) if union_set else 0.0
+
+    def _match_status(clinician_labels_set: set[str], model_labels_set: set[str]) -> str:
+        if not clinician_labels_set:
+            return "Awaiting clinician input"
+        if clinician_labels_set == model_labels_set:
+            return "Strong Match"
+        if clinician_labels_set & model_labels_set:
+            return "Partial Match"
+        return "Mismatch"
+
+    verification_status = _match_status(clinician_set, model_suggested_set)
+
+    summary_cols = st.columns(5)
+    summary_cols[0].metric("Verification status", verification_status)
+    summary_cols[1].metric("Agreement rate", f"{agreement_score:.2%}")
+    summary_cols[2].metric("Clinician entries", f"{len(clinician_set)}")
+    summary_cols[3].metric("Model suggestions", f"{len(model_suggested_set)}")
+    summary_cols[4].metric("Matched labels", f"{len(overlap_set)}")
+    if st.session_state["clinical_review_log"] and any(
+        entry.get("case_index") == case_idx
+        for entry in st.session_state["clinical_review_log"]
+    ):
+        active_step = 4
+    elif clinician_set:
+        active_step = 3
+    else:
+        active_step = 2
+    _render_workflow_steps(active_step=active_step)
+    _render_status_badge(verification_status)
+
+    status_color_map = {
+        "Strong Match": "#0E9F6E",
+        "Partial Match": "#D97706",
+        "Mismatch": "#D64545",
+        "Awaiting clinician input": "#64748B",
+    }
+    gauge_col, chip_col = st.columns([1, 1.4])
+    with gauge_col:
+        gauge_fig = go.Figure(
+            go.Indicator(
+                mode="gauge+number",
+                value=agreement_score * 100,
+                number={"suffix": "%", "font": {"size": 30}},
+                title={"text": "Agreement gauge"},
+                gauge={
+                    "axis": {"range": [0, 100]},
+                    "bar": {"color": status_color_map.get(verification_status, "#64748B")},
+                    "steps": [
+                        {"range": [0, 35], "color": "#FEE2E2"},
+                        {"range": [35, 70], "color": "#FEF3C7"},
+                        {"range": [70, 100], "color": "#DCFCE7"},
+                    ],
+                },
+            )
+        )
+        gauge_fig.update_layout(margin={"l": 20, "r": 20, "t": 45, "b": 10}, height=260)
+        st.plotly_chart(gauge_fig, use_container_width=True, config={"displayModeBar": False})
+
+    with chip_col:
+        st.markdown("**Status across common thresholds**")
+        threshold_points = [0.20, 0.35, 0.50, 0.70]
+        chip_html_parts = []
+        top_ranked_idx = np.argsort(proba_row)[::-1][:verification_top_k]
+        status_to_chip_class = {
+            "Strong Match": "strong",
+            "Partial Match": "partial",
+            "Mismatch": "mismatch",
+            "Awaiting clinician input": "awaiting",
+        }
+        for point in threshold_points:
+            point_model_set = {
+                class_names[i]
+                for i in top_ranked_idx
+                if float(proba_row[i]) >= point
+            }
+            point_status = _match_status(clinician_set, point_model_set)
+            chip_class = status_to_chip_class.get(point_status, "awaiting")
+            active_cls = " status-chip-active" if abs(point - verification_threshold) < 0.005 else ""
+            chip_label = f"{point:.2f}: {point_status}"
+            chip_html_parts.append(
+                f"<span class='status-chip status-chip-{chip_class}{active_cls}'>{escape(chip_label)}</span>"
+            )
+        st.markdown(
+            f"<div class='status-chip-row'>{''.join(chip_html_parts)}</div>",
+            unsafe_allow_html=True,
+        )
+        st.caption("These chips show how verification status changes if the confidence threshold is adjusted.")
+
+    st.divider()
+    verify_col_a, verify_col_b = st.columns([1, 1.5])
+    with verify_col_a:
+        metadata_rows = {
+            "Age group": row.get("age_group", "—"),
+            "Sex at birth": row.get("sex_at_birth", "—"),
+            "Fitzpatrick type": row.get("fitzpatrick_skin_type", "—"),
+            "Race": row.get("combined_race", "—"),
+            "Number of images": row.get("num_images", "—"),
+        }
+        metadata_html = "".join(
+            "<div class='meta-row'><span>"
+            + escape(str(k))
+            + "</span><b>"
+            + escape(str(v))
+            + "</b></div>"
+            for k, v in metadata_rows.items()
+        )
+        st.markdown(
+            f"<section class='meta-card'><b>Case context</b>{metadata_html}</section>",
+            unsafe_allow_html=True,
+        )
+        st.markdown("**Clinician suspected diagnoses**")
+        _render_label_tokens(sorted(clinician_set), tone="neutral")
+
+        st.markdown(f"**Model suggestions (>= {verification_threshold:.2f})**")
+        _render_label_tokens(model_suggested_labels, tone="success")
+
+        st.markdown("**Matched labels**")
+        _render_label_tokens(sorted(overlap_set), tone="success")
+
+        st.markdown("**Clinician-only labels**")
+        _render_label_tokens(clinician_only, tone="danger")
+
+        st.markdown("**Model-only labels**")
+        _render_label_tokens(model_only, tone="neutral")
+
+        if show_ground_truth:
+            st.markdown("**Hidden ground truth (demo only)**")
+            _render_label_tokens(sorted(true_label_set), tone="success")
+
+    with verify_col_b:
+        top_predictions_df["relation"] = top_predictions_df["condition"].apply(
+            lambda condition: "Matches clinician input"
+            if condition in clinician_set
+            else "Alternative suggestion"
+        )
+        verification_fig = px.bar(
+            top_predictions_df.sort_values("confidence"),
+            x="confidence",
+            y="condition",
+            orientation="h",
+            color="relation",
+            color_discrete_map={
+                "Matches clinician input": "#0E9F6E",
+                "Alternative suggestion": "#2563EB",
+            },
+            labels={"confidence": "Model confidence", "condition": "Condition"},
+            title=f"Top {verification_top_k} model suggestions",
+            range_x=[0, 1],
+        )
+        verification_fig.add_vline(
+            x=verification_threshold,
+            line_dash="dash",
+            line_color="#334155",
+            annotation_text=f"Threshold {verification_threshold:.2f}",
+            annotation_position="top",
+        )
+        verification_fig.update_layout(legend_title_text="")
+        st.plotly_chart(verification_fig, use_container_width=True)
+
+        alternatives_df = top_predictions_df[
+            ~top_predictions_df["condition"].isin(sorted(clinician_set))
+        ].head(5)
+        st.markdown("**Top alternative suggestions**")
+        st.dataframe(
+            alternatives_df.rename(
+                columns={
+                    "condition": "Condition",
+                    "confidence": "Confidence",
+                    "relation": "Relation",
+                }
+            ),
+            use_container_width=True,
+            hide_index=True,
+        )
+        top_confidence = (
+            float(top_predictions_df["confidence"].max())
+            if not top_predictions_df.empty
+            else 0.0
+        )
+        st.caption(f"Top model confidence: {top_confidence:.2%}")
+        st.progress(max(0.0, min(1.0, top_confidence)))
+
+    high_risk_keywords = [
+        "melanoma",
+        "carcinoma",
+        "vasculitis",
+        "lupus",
+        "cellulitis",
+        "pemphigus",
+        "bullous",
+        "zoster",
+        "stevens",
+    ]
+
+    def _is_high_risk(label: str) -> bool:
+        label_lc = label.lower()
+        return any(keyword in label_lc for keyword in high_risk_keywords)
+
+    risk_label_hits = sorted([label for label in union_set if _is_high_risk(label)])
+    high_conf_unmatched_risk = top_predictions_df[
+        (top_predictions_df["confidence"] >= 0.70)
+        & (~top_predictions_df["condition"].isin(sorted(clinician_set)))
+        & (top_predictions_df["condition"].apply(_is_high_risk))
+    ]["condition"].tolist()
+
+    if (verification_status == "Mismatch" and risk_label_hits) or high_conf_unmatched_risk:
+        _render_recommendation_card(
+            "Recommendation: Escalate for second review",
+            "High-risk mismatch detected. Route to specialist review or add confirmatory testing before final diagnosis.",
+            tone="danger",
+        )
+    elif verification_status == "Mismatch":
+        _render_recommendation_card(
+            "Recommendation: Additional clinical review",
+            "Model and clinician labels diverge. Re-check lesion context, differential diagnosis, and symptom history.",
+            tone="warning",
+        )
+    elif verification_status == "Partial Match":
+        _render_recommendation_card(
+            "Recommendation: Compare alternatives",
+            "There is partial agreement. Review model-only labels to decide if differential diagnosis should be expanded.",
+            tone="warning",
+        )
+    elif verification_status == "Strong Match":
+        _render_recommendation_card(
+            "Recommendation: Proceed with documented agreement",
+            "Clinician and model agree at the selected threshold. Capture rationale and continue standard workflow.",
+            tone="success",
+        )
+    else:
+        _render_recommendation_card(
+            "Recommendation: Enter clinician diagnosis",
+            "Add suspected diagnoses to activate verification, mismatch checks, and clinical decision capture.",
+            tone="neutral",
+        )
+
+    st.divider()
+    st.subheader("Clinical decision capture")
+    decision_cols = st.columns([1, 1])
+    clinician_action = decision_cols[0].radio(
+        "Decision",
+        [
+            "Accept model suggestions",
+            "Needs additional review",
+            "Override with clinician judgment",
+        ],
+        key=f"cv_action_{case_idx}",
+    )
+    decision_notes = decision_cols[1].text_area(
+        "Review notes",
+        placeholder="Add rationale (e.g., distribution mismatch, patient history, symptom progression).",
+        key=f"cv_notes_{case_idx}",
+    )
+
+    if st.button("Save clinical review", key=f"cv_save_{case_idx}"):
+        st.session_state["clinical_review_log"].append(
+            {
+                "timestamp_utc": pd.Timestamp.utcnow().strftime("%Y-%m-%d %H:%M:%SZ"),
+                "case_index": case_idx,
+                "verification_status": verification_status,
+                "agreement_score_pct": round(agreement_score * 100, 2),
+                "clinician_diagnoses": "; ".join(sorted(clinician_set)),
+                "model_suggestions": "; ".join(model_suggested_labels),
+                "matched_labels": "; ".join(sorted(overlap_set)),
+                "action": clinician_action,
+                "notes": decision_notes.strip(),
+            }
+        )
+        st.success("Clinical review saved to session log.")
+
+    if st.session_state["clinical_review_log"]:
+        with st.expander("Saved review log"):
+            review_df = pd.DataFrame(st.session_state["clinical_review_log"])
+            st.download_button(
+                "Download review log CSV",
+                data=_to_csv_bytes(review_df),
+                file_name="clinical_review_log.csv",
+                mime="text/csv",
+                key="download_clinical_review_log_csv",
+            )
+            st.dataframe(review_df, use_container_width=True, hide_index=True)
+
+
+# ── Page 4: Prediction Explorer ───────────────────────────────────────────────
 
 elif page == "Prediction Explorer":
     st.header("Prediction Explorer")
