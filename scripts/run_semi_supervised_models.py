@@ -19,11 +19,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--pseudo-margin", type=float, default=0.1)
     parser.add_argument("--top-k-classes", type=int, default=15)
     parser.add_argument("--min-label-confidence", type=float, default=0.55)
+    parser.add_argument("--validation-size", type=float, default=0.2)
+    parser.add_argument("--cv-folds", type=int, default=5)
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
+    # Step 1: Execute the semi-supervised benchmark and write artifacts to output_dir.
     run_benchmark(
         processed_dir=args.processed_dir,
         output_dir=args.output_dir,
@@ -33,16 +36,28 @@ def main() -> None:
         pseudo_margin=args.pseudo_margin,
         top_k_classes=args.top_k_classes,
         min_label_confidence=args.min_label_confidence,
+        validation_size=args.validation_size,
+        cv_folds=args.cv_folds,
     )
 
     metrics_path = args.output_dir / "semi_supervised_metrics.csv"
+    validation_metrics_path = args.output_dir / "semi_supervised_validation_metrics.csv"
+    cv_metrics_path = args.output_dir / "semi_supervised_cv_metrics.csv"
     summary_path = args.output_dir / "semi_supervised_summary.json"
     pseudo_path = args.output_dir / "unlabeled_pseudo_labels_accepted.csv"
 
+    # Step 2: Load generated artifacts so this script can print a human-readable report.
     metrics_df = pd.read_csv(metrics_path)
+    validation_metrics_df = pd.read_csv(validation_metrics_path)
+    cv_metrics_df = pd.read_csv(cv_metrics_path)
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
     accepted_df = pd.read_csv(pseudo_path)
 
+    # Step 3: Print model ranking, run summary stats, and key output paths.
+    print("\n=== Validation Metrics (Model Selection Split) ===")
+    print(validation_metrics_df.to_string(index=False))
+    print("\n=== Cross-Validation Metrics (Grouped Labeled Train) ===")
+    print(cv_metrics_df.to_string(index=False))
     print("\n=== Semi-Supervised Model Results ===")
     print(metrics_df.to_string(index=False))
     print("\n=== Run Summary ===")
@@ -63,6 +78,8 @@ def main() -> None:
     )
     print("\nArtifacts:")
     print(f"- {metrics_path}")
+    print(f"- {validation_metrics_path}")
+    print(f"- {cv_metrics_path}")
     print(f"- {summary_path}")
     print(f"- {pseudo_path}")
 
