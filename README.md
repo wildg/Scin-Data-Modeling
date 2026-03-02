@@ -171,7 +171,7 @@ uv sync --group dashboard
 
 ## Usage
 
-### Full pipeline from scratch
+### Quick Start (Recommended Pipeline)
 
 ```bash
 # 1. Download CSVs
@@ -198,94 +198,18 @@ uv run scin_data_modeling evaluate --model ffnn
 
 > **Note:** You can also train models without tuning using `uv run scin_data_modeling train --mode frozen --model logreg`. Tuning is recommended as it searches for optimal hyperparameters, applies top-K class filtering, and optimises per-class decision thresholds.
 
-### Using a validation split
+### Command Reference
 
-Pass `--validate-size` to reserve a fraction of the data for validation. This produces a third CSV (`validate.csv`) and can optionally produce `embeddings_validate.npz`.
+| Command | Key Flags | Description |
+|---------|-----------|-------------|
+| `download` | `--raw-dir`, `--images/--no-images` | Download SCIN CSVs (and optionally images) from GCS |
+| `preprocess` | `--create-split`, `--test-size`, `--validate-size`, `--seed` | Merge and clean CSVs; optionally create train/test/validate splits |
+| `embed` | `--backbone` (`resnet50`, `efficientnet_b0`), `--split` (`train`, `test`, `validate`, `both`, `all`), `--device` (`cpu`, `cuda`, `mps`) | Stream images from GCS and extract embeddings per split |
+| `train` | `--mode frozen`, `--model` (`logreg`, `xgboost`, `lightgbm`, `ffnn`) | Train a classifier on cached embeddings (use `tune` instead for best results) |
+| `tune` | `--model`, `--top-k` (default 30), `--n-iter` (default 15) | Hyperparameter search + per-class threshold optimisation on the validation set |
+| `evaluate` | `--model` | Evaluate a trained/tuned model on the test set |
 
-```bash
-# 70/20/10 train/test/validate split
-uv run scin_data_modeling preprocess --create-split --test-size 0.2 --validate-size 0.1
-
-# Embed all three splits at once
-uv run scin_data_modeling embed --split all
-
-# Or embed just the validation split (e.g. after already embedding train/test)
-uv run scin_data_modeling embed --split validate
-```
-
-The `--split` flag accepts: `train`, `test`, `validate`, `both` (train + test, default), or `all` (train + test + validate).
-
-### Run a specific model (if data and embeddings already exist)
-
-All models use the same `--mode frozen` flag (train on cached embeddings) and the same `--model` flag to select which model to train or evaluate.
-
-```bash
-# Logistic regression (default)
-uv run scin_data_modeling train --mode frozen --model logreg
-uv run scin_data_modeling evaluate --model logreg
-
-# XGBoost
-uv run scin_data_modeling train --mode frozen --model xgboost
-uv run scin_data_modeling evaluate --model xgboost
-
-# LightGBM
-uv run scin_data_modeling train --mode frozen --model lightgbm
-uv run scin_data_modeling evaluate --model lightgbm
-
-# Neural Network Model
-uv run scin_data_modeling train --mode frozen --model ffnn
-uv run scin_data_modeling evaluate --model ffnn
-```
-
-### Hyperparameter tuning with validation set
-
-Tuning requires a validation split with embeddings. It searches hyperparameter combinations, filters to the top-K most frequent classes, and applies per-class threshold optimisation — all evaluated on the validation set.
-
-```bash
-# 1. Create a 70/20/10 train/test/validate split and embed all splits
-uv run scin_data_modeling preprocess --create-split --test-size 0.2 --validate-size 0.1
-uv run scin_data_modeling embed --split all
-
-# 2. Tune each model (uses validation set, saves best model)
-uv run scin_data_modeling tune --model logreg
-uv run scin_data_modeling tune --model xgboost
-uv run scin_data_modeling tune --model lightgbm
-uv run scin_data_modeling tune --model ffnn
-
-# 3. Evaluate tuned models on the test set
-uv run scin_data_modeling evaluate --model logreg
-uv run scin_data_modeling evaluate --model xgboost
-uv run scin_data_modeling evaluate --model lightgbm
-uv run scin_data_modeling evaluate --model ffnn
-```
-
-**Tuning options:**
-
-```bash
-# Customise the number of top classes to predict (default: 30)
-uv run scin_data_modeling tune --model xgboost --top-k 20
-
-# Increase search iterations for XGBoost or FFNN (default: 15)
-uv run scin_data_modeling tune --model xgboost --n-iter 25
-
-# Custom directories
-uv run scin_data_modeling tune --model logreg --processed-dir data/processed --model-dir models
-```
-
-### Options
-
-```bash
-# Use a different device for embedding generation (e.g. Apple Silicon)
-uv run scin_data_modeling embed --device mps
-
-# Custom data/model directories
-uv run scin_data_modeling train --mode frozen --model xgboost --processed-dir data/processed --model-dir models
-uv run scin_data_modeling evaluate --model xgboost --processed-dir data/processed --model-dir models
-
-# Same pattern for LightGBM
-uv run scin_data_modeling train --mode frozen --model lightgbm --processed-dir data/processed --model-dir models
-uv run scin_data_modeling evaluate --model lightgbm --processed-dir data/processed --model-dir models
-```
+All commands accept `--processed-dir` (default `data/processed`) and `--model-dir` (default `models`) for custom directory paths.
 
 ### Output artifacts
 
@@ -325,69 +249,28 @@ Opens automatically at `http://localhost:8501`. Three pages are available via th
 | **Data Explorer** | Top 20 most common conditions, labels-per-case histogram, demographic breakdowns (age, Fitzpatrick skin type, race, sex) |
 | **Prediction Explorer** | Select any test case (0–612) to see true labels vs model predictions with confidence scores, color-coded correct/incorrect |
 
-## Model Comparison
+## Results
 
-Test split size: **613** cases.
+All four models were tuned using the validation set with **top-K=30 class filtering** and **per-class threshold optimisation**, then evaluated on the held-out test set (**613 cases**, 1,047 label instances across 30 skin conditions).
 
-This table compares the logistic regression baseline, the XGBoost baseline, and the new feedforward neural network (FFNN) trained with `sklearn.neural_network.MLPClassifier` on the same embedding features.
-
-| Metric | Logistic Regression | XGBoost | FFNN (sklearn MLP) |
-|---|---:|---:|---:|
-| Hamming Loss | 0.0083 | 0.0070 | 0.0076 |
-| F1 (micro) | 0.1857 | 0.0959 | 0.2056 |
-| F1 (macro) | 0.0163 | 0.0051 | 0.0098 |
-| F1 (weighted) | 0.1583 | 0.0777 | 0.1506 |
-| Precision (micro) | 0.2973 | 0.5180 | 0.3802 |
-| Recall (micro) | 0.1350 | 0.0528 | 0.1409 |
-| Precision (macro) | 0.0290 | 0.0237 | 0.0228 |
-| Recall (macro) | 0.0128 | 0.0036 | 0.0081 |
+| Metric | Logistic Regression | XGBoost | LightGBM | FFNN (sklearn MLP) |
+|---|---:|---:|---:|---:|
+| Hamming Loss | 0.1506 | 0.1035 | 0.1027 | 0.0909 |
+| F1 (micro) | 0.2733 | 0.3052 | 0.3058 | 0.2757 |
+| F1 (macro) | 0.1588 | 0.1567 | 0.1350 | 0.1424 |
+| F1 (weighted) | 0.2772 | 0.2829 | 0.2604 | 0.2518 |
+| Precision (micro) | 0.1884 | 0.2470 | 0.2485 | 0.2524 |
+| Recall (micro) | 0.4976 | 0.3992 | 0.3973 | 0.3037 |
+| Precision (macro) | 0.1378 | 0.1537 | 0.1316 | 0.1855 |
+| Recall (macro) | 0.2720 | 0.2049 | 0.1849 | 0.1605 |
 
 ### Interpretation
 
-- The FFNN improves **micro F1** over logistic regression (**0.2056 vs 0.1857**, ≈+10.7%).
-- FFNN also improves **micro precision** and **micro recall** over logistic regression.
-- Compared with XGBoost, FFNN has substantially better **micro F1** and **micro recall**, while XGBoost remains the most conservative/high-precision model.
-- Macro metrics remain low across all models, indicating the rare-class challenge is still the main bottleneck.
-
-**Notes on metric provenance:** Logistic regression and FFNN metrics were recomputed from local artifacts in the current sklearn 1.8 environment. XGBoost values are taken from the project baseline report to keep the comparison aligned with prior results.
-
-## LightGBM Model Results
-
-Train and evaluate LightGBM with default parameters, or tune using the validation set:
-
-```bash
-# Default training (no tuning)
-uv run scin_data_modeling train --mode frozen --model lightgbm
-uv run scin_data_modeling evaluate --model lightgbm
-
-# Tuned training (recommended)
-uv run scin_data_modeling tune --model lightgbm
-uv run scin_data_modeling evaluate --model lightgbm
-```
-
-LightGBM uses the same multi-label setup:
-`OneVsRestClassifier(LGBMClassifier(n_estimators=300, max_depth=4, learning_rate=0.1))`.
-
-**Default results (no tuning, 370 classes):**
-
-| Metric | Value |
-|--------|------:|
-| **Hamming Loss** | 0.0083 |
-| **F1 (micro)** | 0.1847 |
-| **F1 (macro)** | 0.0163 |
-| **F1 (weighted)** | 0.1576 |
-| **Precision (micro)** | 0.2956 |
-| **Recall (micro)** | 0.1343 |
-| **Precision (macro)** | 0.0299 |
-| **Recall (macro)** | 0.0127 |
-
-### Interpreting the LightGBM results
-
-**LightGBM is effectively tied with logistic regression.** Micro F1 is 0.1847 vs 0.1857 for logistic regression, and precision/recall are also nearly identical (0.2956/0.1343 vs 0.2973/0.1350).
-
-**Compared with XGBoost, LightGBM keeps a much better precision-recall balance.** XGBoost reached higher precision (0.5180) but collapsed recall (0.0528), while LightGBM stays close to the baseline trade-off and therefore much higher micro F1.
-
-**Takeaway:** With default settings (`n_estimators=300`, `max_depth=4`, `learning_rate=0.1`), LightGBM does not materially improve over logistic regression on this dataset, but it avoids the severe recall drop observed with XGBoost. Use `scin_data_modeling tune --model lightgbm` to search for better hyperparameters with top-K class filtering, `scale_pos_weight` for class imbalance, and per-class threshold optimisation.
+- **LightGBM and XGBoost are near-tied for best micro F1** (0.3058 vs 0.3052), both substantially outperforming the linear baseline (0.2733) and FFNN (0.2757).
+- **Logistic regression achieves the highest recall** (micro 0.4976, macro 0.2720) and best macro F1 (0.1588), catching more rare conditions at the cost of higher hamming loss (0.1506).
+- **FFNN achieves the lowest hamming loss** (0.0909) and highest macro precision (0.1855), making it the most conservative predictor with the fewest per-label errors.
+- **Clear precision-recall tradeoff across models:** logistic regression favors recall, FFNN favors precision, and the boosted-tree models (XGBoost/LightGBM) strike a middle ground.
+- **Macro metrics remain low across all models** (macro F1 0.13–0.16), confirming that rare-class prediction is the primary challenge even after top-K filtering and threshold optimisation.
 
 ## Notes on Labels
 
@@ -410,5 +293,5 @@ This project is for educational purposes as part of INSY 674 coursework.
 
 ---
 
-*Last Updated: February 2026*
+*Last Updated: March 2026*
 
